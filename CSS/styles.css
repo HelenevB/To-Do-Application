@@ -1,0 +1,23 @@
+#project-container{
+    width: 40vw;
+    display: grid;
+    grid-template-columns: 20vw 20vw;
+   
+}
+
+.project-element{
+    border-radius: 20px;
+    border: solid orange 1px;
+    height: 23.54vh;
+    margin-top: 10px;
+    margin-left: 0px;
+    margin-right: 20px;
+   position: relative;
+}
+
+.project-element > h3 {
+    text-align: center;
+    bottom: 10px;
+    
+   
+}
