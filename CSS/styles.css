@@ -1,23 +1,57 @@
+#wrapper{
+    display: flex;
+    justify-content: center;
+}
+
 #project-container{
     width: 40vw;
     display: grid;
-    grid-template-columns: 20vw 20vw;
-   
+    grid-template-columns: repeat(auto-fill, minmax(50%,1fr));
+    grid-auto-rows: 20%;
 }
 
 .project-element{
     border-radius: 20px;
     border: solid orange 1px;
-    height: 23.54vh;
+    /* height: 23.54vh; */
     margin-top: 10px;
-    margin-left: 0px;
-    margin-right: 20px;
-   position: relative;
+    margin-right: 10px;
+    position: relative;
 }
+
 
 .project-element > h3 {
     text-align: center;
     bottom: 10px;
     
    
+}
+
+#project-details{
+    border: solid red 1px; 
+    border-radius: 20px;
+    width: 60vw;
+    margin-top: 10px;
+    height: 100vh;
+}
+
+
+
+.delete-button{
+    display: none;
+    position: absolute;
+    top: 5%;
+    right:5%;
+    border: none;
+   color: white;
+
+}
+
+.project-element:hover {
+    background-color: orange;
+}
+
+.project-element:hover .delete-button{
+    background-color: orange;
+    display: inline-block;
 }
