@@ -1,19 +1,19 @@
 #wrapper{
-    display: flex;
-    justify-content: center;
+    /* display: flex;
+    justify-content: center; */
 }
 
 #project-container{
-    width: 40vw;
+    width: 100vw;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(50%,1fr));
-    grid-auto-rows: 20%;
+    grid-template-columns: repeat(auto-fill, minmax(20%,1fr));
+    grid-auto-rows: 50%;
 }
 
 .project-element{
     border-radius: 20px;
     border: solid orange 1px;
-    /* height: 23.54vh; */
+    height: 23.54vh;
     margin-top: 10px;
     margin-right: 10px;
     position: relative;
@@ -26,16 +26,6 @@
     
    
 }
-
-#project-details{
-    border: solid red 1px; 
-    border-radius: 20px;
-    width: 60vw;
-    margin-top: 10px;
-    height: 100vh;
-}
-
-
 
 .delete-button{
     display: none;
@@ -54,4 +44,56 @@
 .project-element:hover .delete-button{
     background-color: orange;
     display: inline-block;
+}
+
+
+/* project detail displays */
+
+#project-details{
+
+    border-radius: 20px;
+    width: 100vw;
+    margin-top: 10px;
+    height: 100vh;
+}
+
+.status-columns-wrapper{
+    width: 100%;
+    height: 100vh;
+    
+}
+
+/* to-do form  */
+
+#add-task{
+   /* padding-left: 1%; */
+   margin-top: 2.5px;
+}
+
+/* boards */
+
+.status-columns-wrapper{
+    display: flex;
+    align-items: flex-start;
+    justify-content: start;
+    gap:10px;
+    height: 100%;
+    padding-top: 1%;
+}
+
+.status-columns{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(189, 189, 189);
+    border-radius: 20px;
+    width: 31.6%;
+    padding:0 1%;
+}
+
+.task{
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    margin: 3% 0;
+    padding: 2%;
 }
