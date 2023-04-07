@@ -10,34 +10,43 @@
 </head>
 <body>
 <h1>TO-DO APPLICATION</h1>
-<form  data-new-project-form>
-   <input type="text" data-new-project-name >
-   <input type="submit"  value="Add Project">
-</form>
+
 <div id="wrapper">
+
+    <!-- add project form -->
+    <form  data-new-project-form>
+        <input type="text" data-new-project-name >
+        <input type="submit"  value="Add Project">
+     </form>
+
+ <!-- display list of all projects -->
     <div id="project-container" data-projects>
 
     </div>
-    <div id="project-details">
 
-        <div class="board"></div>
-        <form id="add-task">
-        <input type="text"/>
+<!-- display project details and task status board for each project  -->
+    <div id="project-details">
+    <h2 id="project-title"></h2>
+   
+    <form id="add-task" data-new-task>
+        <input type="text" data-new-task-name>
         <input type="submit" value="Add Task"/>
     </form>
 
     <div class="status-columns-wrapper">
         <div class="status-columns" id="To-Do-column">
             <h3>To-Do</h3>
-            <p class="task">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum enim qui exercitationem vel sit tenetur debitis.</p>
+            <!-- dummy text  <p class="task">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum enim qui exercitationem vel sit tenetur debitis.</p> -->
         </div>
         <div class="status-columns" id="Doing-column">
             <h3>Doing</h3>
         </div>
         <div class="status-columns" id="Done-column">
             <h3>Done</h3>
+        </div>
     </div>
-    </div>
+
+
 
 </div>
 
