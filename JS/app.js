@@ -1,12 +1,15 @@
-const projectsContainer = document.querySelector('[data-projects]')
-const projectForm = document.querySelector('[data-new-project-form]')
-const projectName = document.querySelector('[data-new-project-name]')
-const taskName = document.querySelector('[data-new-task-name]')
-const addTaskForm =document.querySelector('[data-new-task]')
-const addTask = document.getElementById("add-Task")
-const displayProject = document.getElementById("project-details")
-const projectTitle =document.getElementById("project-title")
-const toDo = document.getElementById('task-list')
+const projectsContainer = document.querySelector('[data-projects]');
+const projectForm = document.querySelector('[data-new-project-form]');
+const projectName = document.querySelector('[data-new-project-name]');
+const taskName = document.querySelector('[data-new-task-name]');
+const addTaskForm = document.querySelector('[data-new-task]');
+const addTask = document.getElementById("add-Task");
+const displayProject = document.getElementById("project-details");
+const projectTitle = document.getElementById("project-title");
+const taskList = document.querySelectorAll('.task-list');
+const toDo = document.getElementById('to-do-list');
+const tasks = document.querySelectorAll('.task');
+const statusColumn = document.querySelectorAll('.status-columns');
 
 
 
@@ -127,9 +130,27 @@ function displayDetails(event){
             allTaskDisplay.setAttribute('draggable' ,true)
             allTaskDisplay.innerText = task
             toDo.appendChild(allTaskDisplay)
+
+            allTaskDisplay.addEventListener('dragstart', () => {
+                allTaskDisplay.classList.add("dragging");
+              });
+    
+            allTaskDisplay.addEventListener("dragend", ()=>{
+                allTaskDisplay.classList.remove("dragging");
+              });
         }
       
         })
+
+
+       statusColumn.forEach((column)=>{
+        column.addEventListener("dragover", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          const draggedItem = document.querySelector(".dragging");
+          column.appendChild(draggedItem);
+        });
+      });
         
 
     }
