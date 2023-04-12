@@ -6,6 +6,7 @@ const addTaskForm =document.querySelector('[data-new-task]')
 const addTask = document.getElementById("add-Task")
 const displayProject = document.getElementById("project-details")
 const projectTitle =document.getElementById("project-title")
+const toDo = document.getElementById('task-list')
 
 
 
@@ -88,10 +89,18 @@ addTaskForm.addEventListener('submit', (event) => {
     console.log(currentProject)
     const newTask = taskName.value
     if(!taskName) return;
+    if (projects[currentProject].task.includes(newTask)) return; 
     projects[currentProject].task.push(newTask)
     taskName.value = null
+    const newTaskDisplay= document.createElement('p')
+    newTaskDisplay.setAttribute('data-task', newTask)
+    newTaskDisplay.classList.add('task')
+    newTaskDisplay.setAttribute('draggable' ,true)
+    newTaskDisplay.innerText = newTask
+    toDo.appendChild(newTaskDisplay)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
     console.log(projects[currentProject].task)
+
 
 })
 
@@ -103,11 +112,25 @@ function clearProject(element){
 
 
 function displayDetails(event){
+  displayProject.style.display='block'
    projects.forEach((project)=>{
     if(project.id ===event.target.getAttribute('data-project-identifier')){
         console.log(project.name)
         projectTitle.innerText = project.name
         displayProject.setAttribute('data-project-identifier', project.id)
+        clearProject(toDo)
+        project.task.forEach((task) => {
+        const taskExists = toDo.querySelector(`p[data-task="${task}"]`)
+        if(!taskExists){
+            const allTaskDisplay = document.createElement('p')
+            allTaskDisplay.classList.add('task')
+            allTaskDisplay.setAttribute('draggable' ,true)
+            allTaskDisplay.innerText = task
+            toDo.appendChild(allTaskDisplay)
+        }
+      
+        })
+        
 
     }
    })

@@ -47,7 +47,7 @@
 /* project detail displays */
 
 #project-details{
-
+    display: none;
     border-radius: 20px;
     width: 100vw;
     margin-top: 10px;
