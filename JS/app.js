@@ -100,10 +100,27 @@ addTaskForm.addEventListener('submit', (event) => {
     newTaskDisplay.classList.add('task')
     newTaskDisplay.setAttribute('draggable' ,true)
     newTaskDisplay.innerText = newTask
+
+    newTaskDisplay.addEventListener('dragstart', () => {
+        newTaskDisplay.classList.add("dragging");
+      });
+      
+    newTaskDisplay.addEventListener("dragend", ()=>{
+        newTaskDisplay.classList.remove("dragging");
+      });
+
+    statusColumn.forEach((column)=>{
+        column.addEventListener("dragover", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          const draggedItem = document.querySelector(".dragging");
+          column.appendChild(draggedItem);
+        });
+      });
+      
     toDo.appendChild(newTaskDisplay)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
     console.log(projects[currentProject].task)
-
 
 })
 
