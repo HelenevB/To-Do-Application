@@ -23,7 +23,7 @@ const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
 console.log(projects)
 
-window
+
 function projectDisplay(){
  clearProject(projectsContainer);
  projects.forEach((project) => {
@@ -62,16 +62,11 @@ function deleteProject(event){
     projects.splice(id,1)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
     projectDisplay()
- 
 }
 
 function closeProject(){
-  projectSection.style.display="block"
-  displayProject.style.display='none'
-  displayProject.removeAttribute('data-project-identifier')
+location.reload()
 }
-
-
 
   
 
@@ -94,10 +89,9 @@ function createProject(name){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,task:[]}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[]}
 
 }
-
 
 
 addTaskForm.addEventListener('submit', (event) => {
@@ -112,10 +106,10 @@ addTaskForm.addEventListener('submit', (event) => {
     projects[currentProject].tasks.push(newTask)
     taskName.value = null
     const newTaskDisplay= document.createElement('p')
-    newTaskDisplay.setAttribute('data-task', newTask)
+    newTaskDisplay.setAttribute('data-task-id', newTask.id)
     newTaskDisplay.classList.add('task')
     newTaskDisplay.setAttribute('draggable' ,true)
-    newTaskDisplay.innerText = newTask
+    newTaskDisplay.innerText = newTask.name
 
     newTaskDisplay.addEventListener('dragstart', () => {
         newTaskDisplay.classList.add("dragging");
@@ -156,7 +150,7 @@ addTaskForm.addEventListener('submit', (event) => {
       
     toDo.appendChild(newTaskDisplay)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-    console.log(projects[currentProject].task)
+    console.log(projects[currentProject].tasks)
 
 })
 
@@ -171,7 +165,7 @@ function displayDetails(event){
   projectSection.style.display="none"
   displayProject.style.display='block'
    projects.forEach((project)=>{
-    if(project.id === event.target.getAttribute('data-project-identifier')){
+    if(project.id ===event.target.getAttribute('data-project-identifier')){
         console.log(project.name)
         projectTitle.innerText = project.name
         displayProject.setAttribute('data-project-identifier', project.id)
@@ -181,61 +175,80 @@ function displayDetails(event){
         clearProject(onHold)
 
         project.tasks.forEach((task) => {
-        const taskExists = toDo.querySelector(`[data-task-id="${task.id}"]`)
-        if(!taskExists){
-            const allTaskDisplay = document.createElement('p')
-            allTaskDisplay.classList.add('task')
-            allTaskDisplay.setAttribute('draggable' ,true)
-            allTaskDisplay.innerText = task.name
-            if(task.status === 'todo'){
-            toDo.appendChild(allTaskDisplay) 
-            } else if(task.status === "doing"){
-              doing.appendChild(allTaskDisplay)
-            } else if(task.status === "done"){
-              done.appendChild(allTaskDisplay)
-            } else if(task.status === "onhold"){
-              onHold.appendChild(allTaskDisplay)
-            } else{
-
-            }
-
-
-            allTaskDisplay.addEventListener('dragstart', () => {
-                allTaskDisplay.classList.add("dragging");
-              });
-    
-            allTaskDisplay.addEventListener("dragend", ()=>{
-                allTaskDisplay.classList.remove("dragging");
-              });
-        }
+          const taskExists = toDo.querySelector(`[data-task-id="${task.id}"]`)
+          if(!taskExists){
+              const allTaskDisplay = document.createElement('p')
+              allTaskDisplay.classList.add('task')
+              allTaskDisplay.setAttribute('data-task-id', task.id)
+              allTaskDisplay.setAttribute('draggable' ,true)
+              allTaskDisplay.innerText = task.name
+              if(task.status === 'todo'){
+              toDo.appendChild(allTaskDisplay) 
+              } else if(task.status === "doing"){
+                doing.appendChild(allTaskDisplay)
+              } else if(task.status === "done"){
+                done.appendChild(allTaskDisplay)
+              } else if(task.status === "onhold"){
+                onHold.appendChild(allTaskDisplay)
+              } else{
+  
+              }
+  
+  
+              allTaskDisplay.addEventListener('dragstart', (event) => {
+                  allTaskDisplay.classList.add("dragging");
+                });
+      
+              allTaskDisplay.addEventListener("dragend", ()=>{
+                  allTaskDisplay.classList.remove("dragging");
+                });
+          }
+        
+     
       
         })
+       
 
 
        statusColumn.forEach((column)=>{
-        column.addEventListener("dragover", (e)=>{
-          e.preventDefault();
-          e.stopPropagation();
-       
-        });
+        
+          column.addEventListener("dragover", (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+         
+          });
+  
+          column.addEventListener("drop", (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            const draggedItem = document.querySelector(".dragging");
+            const taskId = draggedItem.getAttribute('data-task-id');
+            const currentProjectId = project.id;
+            const status = column.getAttribute('id').split('-')[0];
+            const currentTask = project.tasks.findIndex((task)=> task.id === taskId);
+            project.tasks[currentTask].status = status;
+            const displayProjectId = displayProject.getAttribute('data-project-identifier')
+            console.log(currentProjectId)
+            console.log(displayProjectId)
+            if(currentProjectId ===  displayProjectId){
+              column.appendChild(draggedItem);
+              localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
+            } 
+         
+          });
+  
+        
+        
 
-        column.addEventListener("drop", (e)=>{
-          e.preventDefault();
-          e.stopPropagation();
-          const draggedItem = document.querySelector(".dragging");
-          column.appendChild(draggedItem);
-          localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-       
-        });
+        
+
       });
         
-     
+      closeDisplay.addEventListener('click', closeProject)
     }
    })
 
     
 }
-
-closeDisplay.addEventListener('click', closeProject)
 
 projectDisplay()
