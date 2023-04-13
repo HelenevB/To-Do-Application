@@ -18,7 +18,7 @@ const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
 console.log(projects)
 
-window
+
 function projectDisplay(){
  clearProject(projectsContainer);
  projects.forEach((project) => {
@@ -79,7 +79,7 @@ function createProject(name){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,task:[]}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[]}
 
 }
 
@@ -90,16 +90,17 @@ addTaskForm.addEventListener('submit', (event) => {
     const currentProjectId = displayProject.getAttribute('data-project-identifier')
     const currentProject = projects.findIndex((project)=> project.id === currentProjectId)
     console.log(currentProject)
-    const newTask = taskName.value
-    if(!taskName) return;
-    if (projects[currentProject].task.includes(newTask)) return; 
-    projects[currentProject].task.push(newTask)
+    const newTaskName = taskName.value
+    if(!newTaskName) return;
+    if (projects[currentProject].tasks.includes((task)=> task.name === newTaskName))  return; 
+    const newTask = { name: newTaskName , id: Date.now().toString(), status:'to-do'}
+    projects[currentProject].tasks.push(newTask)
     taskName.value = null
     const newTaskDisplay= document.createElement('p')
-    newTaskDisplay.setAttribute('data-task', newTask)
+    newTaskDisplay.setAttribute('data-task-id', newTask.id)
     newTaskDisplay.classList.add('task')
     newTaskDisplay.setAttribute('draggable' ,true)
-    newTaskDisplay.innerText = newTask
+    newTaskDisplay.innerText = newTask.name
 
     newTaskDisplay.addEventListener('dragstart', () => {
         newTaskDisplay.classList.add("dragging");
@@ -120,7 +121,7 @@ addTaskForm.addEventListener('submit', (event) => {
       
     toDo.appendChild(newTaskDisplay)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-    console.log(projects[currentProject].task)
+    console.log(projects[currentProject].tasks)
 
 })
 
@@ -139,16 +140,17 @@ function displayDetails(event){
         projectTitle.innerText = project.name
         displayProject.setAttribute('data-project-identifier', project.id)
         clearProject(toDo)
-        project.task.forEach((task) => {
-        const taskExists = toDo.querySelector(`p[data-task="${task}"]`)
+        project.tasks.forEach((task) => {
+        const taskExists = toDo.querySelector(`[data-task-id="${task.id}"]`)
         if(!taskExists){
             const allTaskDisplay = document.createElement('p')
             allTaskDisplay.classList.add('task')
+            allTaskDisplay.setAttribute('data-task-id', task.id)
             allTaskDisplay.setAttribute('draggable' ,true)
-            allTaskDisplay.innerText = task
+            allTaskDisplay.innerText = task.name
             toDo.appendChild(allTaskDisplay)
 
-            allTaskDisplay.addEventListener('dragstart', () => {
+            allTaskDisplay.addEventListener('dragstart', (event) => {
                 allTaskDisplay.classList.add("dragging");
               });
     
@@ -161,12 +163,30 @@ function displayDetails(event){
 
 
        statusColumn.forEach((column)=>{
+
         column.addEventListener("dragover", (e)=>{
           e.preventDefault();
           e.stopPropagation();
           const draggedItem = document.querySelector(".dragging");
+          const taskId = draggedItem.getAttribute('data-task-id')
+          const currentProjectId = project.id
+          const currentTask = project.tasks.findIndex((task)=> task.id === taskId)
+          const status = column.getAttribute('id').split('-')[0]
+          project.tasks[currentTask].status = status
+          console.log(project.tasks)
+          console.log(status)
+          console.log(currentTask)
+          console.log(draggedItem)
+          console.log(taskId)              
+          console.log(currentProjectId)    
           column.appendChild(draggedItem);
+          localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+          console.log(projects)
+       
         });
+
+      
+
       });
         
 
