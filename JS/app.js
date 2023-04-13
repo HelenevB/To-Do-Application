@@ -1,3 +1,4 @@
+const projectSection = document.getElementById('project-section')
 const projectsContainer = document.querySelector('[data-projects]');
 const projectForm = document.querySelector('[data-new-project-form]');
 const projectName = document.querySelector('[data-new-project-name]');
@@ -7,9 +8,13 @@ const addTask = document.getElementById("add-Task");
 const displayProject = document.getElementById("project-details");
 const projectTitle = document.getElementById("project-title");
 const taskList = document.querySelectorAll('.task-list');
-const toDo = document.getElementById('to-do-list');
+const toDo = document.getElementById('todo-list');
+const doing = document.getElementById("doing-list")
+const done = document.getElementById("done-list")
+const onHold = document.getElementById("onhold-list")
 const tasks = document.querySelectorAll('.task');
 const statusColumn = document.querySelectorAll('.status-columns');
+const closeDisplay= document.getElementById('close-project')
 
 
 
@@ -51,12 +56,22 @@ function projectDisplay(){
 
 
 function deleteProject(event){
+    event.stopPropagation()
     const id =  projects.findIndex(project => project.id === event.target.id)
     console.log(id)
     projects.splice(id,1)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
     projectDisplay()
+ 
 }
+
+function closeProject(){
+  projectSection.style.display="block"
+  displayProject.style.display='none'
+  displayProject.removeAttribute('data-project-identifier')
+}
+
+
 
   
 
@@ -93,7 +108,7 @@ addTaskForm.addEventListener('submit', (event) => {
     const newTaskName = taskName.value
     if(!newTaskName) return;
     if (projects[currentProject].tasks.includes((task)=> task.name === newTaskName))  return; 
-    const newTask = { name: newTaskName , id: Date.now().toString(), status:'to-do'}
+    const newTask = { name: newTaskName , id: Date.now().toString(), status:'todo'}
     projects[currentProject].tasks.push(newTask)
     taskName.value = null
     const newTaskDisplay= document.createElement('p')
@@ -111,12 +126,32 @@ addTaskForm.addEventListener('submit', (event) => {
       });
 
     statusColumn.forEach((column)=>{
-        column.addEventListener("dragover", (e)=>{
-          e.preventDefault();
-          e.stopPropagation();
-          const draggedItem = document.querySelector(".dragging");
-          column.appendChild(draggedItem);
-        });
+      column.addEventListener("dragover", (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+     
+      });
+
+      column.addEventListener("drop", (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        const draggedItem = document.querySelector(".dragging");
+        const taskId = draggedItem.getAttribute('data-task-id')
+        const project = projects[currentProject]
+        const currentTask = project.tasks.findIndex((task)=> task.id === taskId)
+        const status = column.getAttribute('id').split('-')[0]
+        project.tasks[currentTask].status = status
+        console.log(project.tasks)
+        console.log(status)
+        console.log(currentTask)
+        console.log(draggedItem)
+        console.log(taskId)              
+        console.log(currentProjectId)    
+        column.appendChild(draggedItem);
+        localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+     
+      });
+
       });
       
     toDo.appendChild(newTaskDisplay)
@@ -133,13 +168,18 @@ function clearProject(element){
 
 
 function displayDetails(event){
+  projectSection.style.display="none"
   displayProject.style.display='block'
    projects.forEach((project)=>{
-    if(project.id ===event.target.getAttribute('data-project-identifier')){
+    if(project.id === event.target.getAttribute('data-project-identifier')){
         console.log(project.name)
         projectTitle.innerText = project.name
         displayProject.setAttribute('data-project-identifier', project.id)
         clearProject(toDo)
+        clearProject(doing)
+        clearProject(done)
+        clearProject(onHold)
+
         project.tasks.forEach((task) => {
         const taskExists = toDo.querySelector(`[data-task-id="${task.id}"]`)
         if(!taskExists){
@@ -148,7 +188,18 @@ function displayDetails(event){
             allTaskDisplay.setAttribute('data-task-id', task.id)
             allTaskDisplay.setAttribute('draggable' ,true)
             allTaskDisplay.innerText = task.name
-            toDo.appendChild(allTaskDisplay)
+            if(task.status === 'todo'){
+            toDo.appendChild(allTaskDisplay) 
+            } else if(task.status === "doing"){
+              doing.appendChild(allTaskDisplay)
+            } else if(task.status === "done"){
+              done.appendChild(allTaskDisplay)
+            } else if(task.status === "onhold"){
+              onHold.appendChild(allTaskDisplay)
+            } else{
+
+            }
+
 
             allTaskDisplay.addEventListener('dragstart', (event) => {
                 allTaskDisplay.classList.add("dragging");
@@ -167,6 +218,12 @@ function displayDetails(event){
         column.addEventListener("dragover", (e)=>{
           e.preventDefault();
           e.stopPropagation();
+       
+        });
+
+        column.addEventListener("drop", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
           const draggedItem = document.querySelector(".dragging");
           const taskId = draggedItem.getAttribute('data-task-id')
           const currentProjectId = project.id
@@ -181,7 +238,6 @@ function displayDetails(event){
           console.log(currentProjectId)    
           column.appendChild(draggedItem);
           localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-          console.log(projects)
        
         });
 
@@ -189,11 +245,13 @@ function displayDetails(event){
 
       });
         
-
+     
     }
    })
 
-
+    
 }
+
+closeDisplay.addEventListener('click', closeProject)
 
 projectDisplay()

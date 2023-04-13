@@ -11,7 +11,7 @@
 <body>
 <h1>TO-DO APPLICATION</h1>
 
-<div id="wrapper">
+<div id="project-section">
 
     <!-- add project form -->
     <form  data-new-project-form>
@@ -23,44 +23,57 @@
     <div id="project-container" data-projects>
 
     </div>
-
+</div>
 <!-- display project details and task status board for each project  -->
-    <div id="project-details">
-    <h2 id="project-title"></h2>
-   
-    <form id="add-task" data-new-task>
-        <input type="text" data-new-task-name>
-        <input type="submit" value="Add Task"/>
-    </form>
-
-    <div class="status-columns-wrapper">
-        <div class="status-columns" id="To-Do-column">
-            <h3 id="To-Do-heading">To-Do</h3>
-            <div class="task-list" id="to-do-list">
-
-            </div>
-            <!-- dummy text  <p class="task">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum enim qui exercitationem vel sit tenetur debitis.</p> -->
-        </div>
-        <div class="status-columns" id="Doing-column">
-            <h3>Doing</h3>
-            <div class="task-list" id="doing-list">
-
-            </div>
-        </div>
-        <div class="status-columns" id="Done-column">
-            <h3>Done</h3>
-            <div class="task-list" id="done-list">
-
-            </div>
-        </div>
-        <div class="status-columns" id="onHold-column">
-            <h3>On Hold</h3>
-            <div class="task-list" id="onHold-list">
-
-            </div>
-        </div>
+<div id="project-details">
+    <div id="project-header">
+        <h2 id="project-title"></h2>
+        <h2 id="close-project">X</h2>
     </div>
+     
+    <div id="task-form">
 
+        <form id="add-task" data-new-task>
+            <input type="text" data-new-task-name>
+            <input type="submit" value="Add Task"/>
+        </form>
+        
+        </div>
+    
+   
+     
+
+    
+        <div class="status-columns-wrapper">
+            <div class="status-columns" id="todo-column">
+                <h3 id="To-Do-heading">To-Do</h3>
+                <div class="task-list" id="todo-list">
+    
+                </div>
+                <!-- dummy text  <p class="task">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum enim qui exercitationem vel sit tenetur debitis.</p> -->
+            </div>
+            <div class="status-columns" id="doing-column">
+                <h3>Doing</h3>
+                <div class="task-list" id="doing-list">
+    
+                </div>
+            </div>
+            <div class="status-columns" id="done-column">
+                <h3>Done</h3>
+                <div class="task-list" id="done-list">
+    
+                </div>
+            </div>
+            <div class="status-columns" id="onhold-column">
+                <h3>On Hold</h3>
+                <div class="task-list" id="onhold-list">
+    
+                </div>
+            </div>
+        </div>
+    
+
+ 
 
 
 </div>
