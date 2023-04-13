@@ -23,7 +23,7 @@ const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
 console.log(projects)
 
-
+window
 function projectDisplay(){
  clearProject(projectsContainer);
  projects.forEach((project) => {
@@ -94,7 +94,7 @@ function createProject(name){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[]}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,task:[]}
 
 }
 
@@ -112,10 +112,10 @@ addTaskForm.addEventListener('submit', (event) => {
     projects[currentProject].tasks.push(newTask)
     taskName.value = null
     const newTaskDisplay= document.createElement('p')
-    newTaskDisplay.setAttribute('data-task-id', newTask.id)
+    newTaskDisplay.setAttribute('data-task', newTask)
     newTaskDisplay.classList.add('task')
     newTaskDisplay.setAttribute('draggable' ,true)
-    newTaskDisplay.innerText = newTask.name
+    newTaskDisplay.innerText = newTask
 
     newTaskDisplay.addEventListener('dragstart', () => {
         newTaskDisplay.classList.add("dragging");
@@ -156,7 +156,7 @@ addTaskForm.addEventListener('submit', (event) => {
       
     toDo.appendChild(newTaskDisplay)
     localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-    console.log(projects[currentProject].tasks)
+    console.log(projects[currentProject].task)
 
 })
 
@@ -185,7 +185,6 @@ function displayDetails(event){
         if(!taskExists){
             const allTaskDisplay = document.createElement('p')
             allTaskDisplay.classList.add('task')
-            allTaskDisplay.setAttribute('data-task-id', task.id)
             allTaskDisplay.setAttribute('draggable' ,true)
             allTaskDisplay.innerText = task.name
             if(task.status === 'todo'){
@@ -201,7 +200,7 @@ function displayDetails(event){
             }
 
 
-            allTaskDisplay.addEventListener('dragstart', (event) => {
+            allTaskDisplay.addEventListener('dragstart', () => {
                 allTaskDisplay.classList.add("dragging");
               });
     
@@ -214,7 +213,6 @@ function displayDetails(event){
 
 
        statusColumn.forEach((column)=>{
-
         column.addEventListener("dragover", (e)=>{
           e.preventDefault();
           e.stopPropagation();
@@ -225,24 +223,10 @@ function displayDetails(event){
           e.preventDefault();
           e.stopPropagation();
           const draggedItem = document.querySelector(".dragging");
-          const taskId = draggedItem.getAttribute('data-task-id')
-          const currentProjectId = project.id
-          const currentTask = project.tasks.findIndex((task)=> task.id === taskId)
-          const status = column.getAttribute('id').split('-')[0]
-          project.tasks[currentTask].status = status
-          console.log(project.tasks)
-          console.log(status)
-          console.log(currentTask)
-          console.log(draggedItem)
-          console.log(taskId)              
-          console.log(currentProjectId)    
           column.appendChild(draggedItem);
           localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
        
         });
-
-      
-
       });
         
      
