@@ -133,7 +133,7 @@ function submitTask(event){
   console.log(currentProject)
   const newTaskName = taskName.value
   if(!newTaskName) return;
-  if (projects[currentProject].tasks.includes((task)=> task.name === newTaskName))  return; 
+  if (projects[currentProject].tasks.some((task)=> task.name === newTaskName))  return; 
   const newTask = { name: newTaskName , id: Date.now().toString(), status:'todo'}
   projects[currentProject].tasks.push(newTask)
   taskName.value = null
@@ -279,15 +279,14 @@ function displayDetails(event){
       }
      })
   
-      
+   
   }
   
 
 
 
-
-closeDisplay.addEventListener('click', closeProject)
-projectForm.addEventListener('submit',addProject )
-addTaskForm.addEventListener('submit', submitTask)
-
+ closeDisplay.addEventListener('click', closeProject)
+ addTaskForm.addEventListener('submit', submitTask)
+ projectForm.addEventListener('submit', addProject)
+ 
 projectDisplay()
