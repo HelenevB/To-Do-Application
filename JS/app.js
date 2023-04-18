@@ -23,6 +23,7 @@ const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
 console.log(projects)
 
+
 // function to display all the projects 
 
 function projectDisplay() {
@@ -128,6 +129,7 @@ function createProject(name){
 function submitTask(event){
 
   event.preventDefault()
+  event.stopPropagation();
   const currentProjectId = displayProject.getAttribute('data-project-identifier')
   const currentProject = projects.findIndex((project)=> project.id === currentProjectId)
   console.log(currentProject)
@@ -150,41 +152,13 @@ function submitTask(event){
   newTaskDisplay.addEventListener("dragend", ()=>{
       newTaskDisplay.classList.remove("dragging");
     });
-
-  statusColumn.forEach((column)=>{
-    column.addEventListener("dragover", (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-   
-    });
-
-    column.addEventListener("drop", (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-      const draggedItem = document.querySelector(".dragging");
-      const taskId = draggedItem.getAttribute('data-task-id')
-      const project = projects[currentProject]
-      const currentTask = project.tasks.findIndex((task)=> task.id === taskId)
-      const status = column.getAttribute('id').split('-')[0]
-      project.tasks[currentTask].status = status
-      console.log(project.tasks)
-      console.log(status)
-      console.log(currentTask)
-      console.log(draggedItem)
-      console.log(taskId)              
-      console.log(currentProjectId)    
-      column.appendChild(draggedItem);
-      localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-   
-    });
-
-    });
-    
+ 
   toDo.appendChild(newTaskDisplay)
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-  console.log(projects[currentProject].tasks)
+  dragAndDropTask(projects[currentProject])
+   console.log(projects[currentProject].tasks)
 
-}
+ }
 
 
 function clearProject(element){
@@ -227,30 +201,43 @@ function displayDetails(event){
                 }
     
     
-                allTaskDisplay.addEventListener('dragstart', (event) => {
+                allTaskDisplay.addEventListener('dragstart', () => {
                     allTaskDisplay.classList.add("dragging");
                   });
         
                 allTaskDisplay.addEventListener("dragend", ()=>{
                     allTaskDisplay.classList.remove("dragging");
                   });
+
             }
           
        
         
           })
-         
-  
-  
-         statusColumn.forEach((column)=>{
-          
-            column.addEventListener("dragover", (e)=>{
-              e.preventDefault();
-              e.stopPropagation();
+       
            
-            });
+          dragAndDropTask(project)  
+      }
+
+     
+     })
+  
+ 
+  }
+
+  function dragAndDropTask(project){
     
-            column.addEventListener("drop", (e)=>{
+    statusColumn.forEach((column)=>{
+
+
+      column.addEventListener("dragover", (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+      
+     
+      });
+
+           column.addEventListener("drop", (e)=>{
               e.preventDefault();
               e.stopPropagation();
               const draggedItem = document.querySelector(".dragging");
@@ -263,24 +250,31 @@ function displayDetails(event){
               console.log(currentProjectId)
               console.log(displayProjectId)
               if(currentProjectId ===  displayProjectId){
-                column.appendChild(draggedItem);
-                localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
-              } 
-           
+                column.appendChild(draggedItem)
+                localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+
+      
+              }
+
             });
-    
           
-          
-  
-          
+           
+
   
         });
-          
-      }
-     })
-  
-   
-  }
+
+
+     }
+
+      
+
+
+
+       
+       
+
+      
+
   
 
 
