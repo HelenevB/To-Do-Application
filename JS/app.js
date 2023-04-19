@@ -12,7 +12,6 @@ const toDo = document.getElementById('todo-list');
 const doing = document.getElementById("doing-list")
 const done = document.getElementById("done-list")
 const onHold = document.getElementById("onhold-list")
-const tasks = document.querySelectorAll('.task');
 const statusColumn = document.querySelectorAll('.status-columns');
 const closeDisplay= document.getElementById('close-project')
 
@@ -27,6 +26,7 @@ console.log(projects)
 // function to display all the projects 
 
 function projectDisplay() {
+
     clearProject(projectsContainer);
   
     projects.forEach((project) => {
@@ -67,7 +67,6 @@ function createProjectDisplay(project){
 // function to create the delete button 
 function createDeleteButton(project) {
     const projectDelete = document.createElement('button');
-  
     projectDelete.setAttribute('id', project.id);
     projectDelete.classList.add('delete-button');
     projectDelete.innerText = 'X'
@@ -95,7 +94,9 @@ function deleteProject(event){
 }
 
 function closeProject(){
-location.reload()
+ location.reload()
+
+
 }
 
   
@@ -106,7 +107,7 @@ function addProject(event){
         event.preventDefault()
         const newProject = projectName.value
         // console.log(newProject)
-        if(newProject === null |newProject === "") return
+        if(!newProject) return
        const projectList = createProject(newProject)
        projectName.value = null 
        projects.push(projectList)
@@ -132,18 +133,22 @@ function submitTask(event){
   event.stopPropagation();
   const currentProjectId = displayProject.getAttribute('data-project-identifier')
   const currentProject = projects.findIndex((project)=> project.id === currentProjectId)
+  
   console.log(currentProject)
   const newTaskName = taskName.value
   if(!newTaskName) return;
-  if (projects[currentProject].tasks.some((task)=> task.name === newTaskName))  return; 
+  if (projects[currentProject].tasks.some((task)=> task.name.toLowerCase() === newTaskName.toLowerCase()))  return 
   const newTask = { name: newTaskName , id: Date.now().toString(), status:'todo'}
   projects[currentProject].tasks.push(newTask)
   taskName.value = null
   const newTaskDisplay= document.createElement('p')
+  const taskDelete = createTaskDeleteButton(newTask)
   newTaskDisplay.setAttribute('data-task-id', newTask.id)
   newTaskDisplay.classList.add('task')
   newTaskDisplay.setAttribute('draggable' ,true)
   newTaskDisplay.innerText = newTask.name
+  newTaskDisplay.appendChild(taskDelete)
+
 
   newTaskDisplay.addEventListener('dragstart', () => {
       newTaskDisplay.classList.add("dragging");
@@ -154,11 +159,40 @@ function submitTask(event){
     });
  
   toDo.appendChild(newTaskDisplay)
+  taskDelete.addEventListener("click", projectTaskDelete)
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
   dragAndDropTask(projects[currentProject])
    console.log(projects[currentProject].tasks)
 
  }
+
+ function createTaskDeleteButton(task) {
+  const taskDelete = document.createElement('button');
+
+  taskDelete.setAttribute('id', task.id);
+  taskDelete.classList.add('taskdelete-button');
+  taskDelete.innerText = 'X'
+
+  return taskDelete;
+}
+
+function projectTaskDelete(e){
+  const taskId =e.target.getAttribute('id')
+  const currentProjectId = displayProject.getAttribute('data-project-identifier');
+  console.log(currentProjectId)
+  console.log(taskId)
+  const currentProject = projects.find(project =>project.id === currentProjectId)
+  console.log(currentProject)
+  const taskIndex = currentProject.tasks.findIndex(task => task.id === taskId)
+  currentProject.tasks.splice(taskIndex, 1)
+  localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+  const projectElement = document.querySelector(`[data-project-identifier="${currentProjectId}"]`);
+  const clickEvent = new Event('click');
+  projectElement.dispatchEvent(clickEvent);
+    
+
+}
+
 
 
 function clearProject(element){
@@ -170,24 +204,26 @@ function clearProject(element){
 function displayDetails(event){
     projectSection.style.display="none"
     displayProject.style.display='block'
-     projects.forEach((project)=>{
-      if(project.id ===event.target.getAttribute('data-project-identifier')){
-          console.log(project.name)
-          projectTitle.innerText = project.name
-          displayProject.setAttribute('data-project-identifier', project.id)
+    const projectId =event.currentTarget.getAttribute('data-project-identifier');
+    const project = projects.find((project) => project.id === projectId);
+
+     projectTitle.innerText = project.name
+     displayProject.setAttribute('data-project-identifier', project.id)
+
           clearProject(toDo)
           clearProject(doing)
           clearProject(done)
           clearProject(onHold)
   
           project.tasks.forEach((task) => {
-            const taskExists = toDo.querySelector(`[data-task-id="${task.id}"]`)
-            if(!taskExists){
+         
                 const allTaskDisplay = document.createElement('p')
+                const taskDelete = createTaskDeleteButton(task)
                 allTaskDisplay.classList.add('task')
                 allTaskDisplay.setAttribute('data-task-id', task.id)
                 allTaskDisplay.setAttribute('draggable' ,true)
                 allTaskDisplay.innerText = task.name
+                allTaskDisplay.appendChild(taskDelete)
                 if(task.status === 'todo'){
                 toDo.appendChild(allTaskDisplay) 
                 } else if(task.status === "doing"){
@@ -208,35 +244,34 @@ function displayDetails(event){
                 allTaskDisplay.addEventListener("dragend", ()=>{
                     allTaskDisplay.classList.remove("dragging");
                   });
+             
+    
+                  taskDelete.addEventListener("click", projectTaskDelete)
 
-            }
-          
-       
-        
-          })
+                })
+
+                 dragAndDropTask(project)  
+          }
        
            
-          dragAndDropTask(project)  
-      }
+         
 
-     
-     })
   
  
-  }
+  
 
   function dragAndDropTask(project){
-    
+    console.log(project)
     statusColumn.forEach((column)=>{
 
 
       column.addEventListener("dragover", (e)=>{
         e.preventDefault();
-        e.stopPropagation();
+        e.stopPropagation()
       
      
       });
-
+          
            column.addEventListener("drop", (e)=>{
               e.preventDefault();
               e.stopPropagation();
@@ -252,30 +287,19 @@ function displayDetails(event){
               if(currentProjectId ===  displayProjectId){
                 column.appendChild(draggedItem)
                 localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-
+                console.log(project.tasks)
+              
       
-              }
-
+              } 
             });
           
-           
+         
 
   
         });
 
-
      }
 
-      
-
-
-
-       
-       
-
-      
-
-  
 
 
 

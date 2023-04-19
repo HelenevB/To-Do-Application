@@ -95,9 +95,25 @@
 }
 
 .task{
+    position: relative;
     background-color: white;
     color: black;
     border-radius: 5px;
     margin: 3% 0;
     padding: 2%;
+}
+
+.taskdelete-button{
+    position: absolute;
+    display: none;
+    top: 1%;
+    right: 0%;
+    border: none;
+    border-radius: 5px;
+}
+
+.task:hover .taskdelete-button{
+    background-color: inherit;
+    display: inline-block;
+
 }
