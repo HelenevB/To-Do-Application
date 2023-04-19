@@ -2,6 +2,7 @@ const projectSection = document.getElementById('project-section')
 const projectsContainer = document.querySelector('[data-projects]');
 const projectForm = document.querySelector('[data-new-project-form]');
 const projectName = document.querySelector('[data-new-project-name]');
+const projectColor = document.getElementById('project-color')
 const taskName = document.querySelector('[data-new-task-name]');
 const addTaskForm = document.querySelector('[data-new-task]');
 const addTask = document.getElementById("add-Task");
@@ -59,6 +60,7 @@ function createProjectDisplay(project){
     projectElement.appendChild(projectCreated);
   
     projectElement.classList.add('project-element');
+    projectElement.style.backgroundColor = project.backgroundColor
   
     return projectElement;
 }
@@ -105,11 +107,14 @@ function closeProject(){
 function addProject(event){
 
         event.preventDefault()
-        const newProject = projectName.value
+        const newProjectName = projectName.value
+        const newProjectColor = projectColor.value
+
         // console.log(newProject)
-        if(!newProject) return
-       const projectList = createProject(newProject)
+        if(!newProjectName) return
+       const projectList = createProject(newProjectName, newProjectColor)
        projectName.value = null 
+       projectColor.value = "#FFFFFF"
        projects.push(projectList)
        localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
        projectDisplay()
@@ -118,11 +123,11 @@ function addProject(event){
 }
 
 
-function createProject(name){
+function createProject(name, color){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[]}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color}
 
 }
 
@@ -185,6 +190,7 @@ function projectTaskDelete(e){
   console.log(currentProject)
   const taskIndex = currentProject.tasks.findIndex(task => task.id === taskId)
   currentProject.tasks.splice(taskIndex, 1)
+  console.log("task has been deleted ")
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
   const projectElement = document.querySelector(`[data-project-identifier="${currentProjectId}"]`);
   const clickEvent = new Event('click');
