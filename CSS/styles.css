@@ -3,7 +3,6 @@ body{
     overflow-x: hidden;
     box-sizing: border-box;
     margin: 0;
-
 }
 
 #header , #app-name , #addNewProject{
@@ -84,6 +83,7 @@ body{
     width: 100%;
     border-radius: 10px;
     border: solid 1px rgb(169, 157, 157); 
+
 }
 
 #addNewProject{
@@ -99,17 +99,16 @@ body{
     width: 25vw;
     position:relative;
     /* z-index: 1; */
-    background-color: #FFFFFF;
     margin: 50px auto;
 }
 
 
 #color-selector{
-    width: 25%;
+    width: 50px;
     height: 30px;
-    background-color: #FFFFFF;
     border: none; 
     padding-left: 10px;
+    background: none;
 }
 
 #colorsform{
@@ -201,4 +200,25 @@ body{
     background-color: inherit;
     display: inline-block;
 
+}
+
+
+/* dark theme */
+
+.dark-theme {
+    background-color:#36454F; 
+    color: #FFFFFF;
+}
+
+.dark-theme #newProjectForm{
+    border-color:white ;
+}
+
+.dark-theme .project-element{
+    box-shadow: 1px 3px 3px rgb(28, 16, 16);
+
+}
+
+.dark-theme .project-element:hover{
+    box-shadow: 0 0 40px rgb(247, 229, 229) inset;
 }

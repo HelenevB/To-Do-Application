@@ -19,6 +19,8 @@ const closeDisplay= document.getElementById('close-project')
 const newProjectSection =document.getElementById('addNewProject')
 const newProjectFormSection = document.getElementById('newProjectForm')
 const projectFormSubmit = document.getElementById('projectformsubmit')
+const darkModeBtn =document.getElementById('dark-mode')
+const body = document.querySelector('body')
 
 
 
@@ -26,6 +28,18 @@ const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
 console.log(projects)
+
+let darkMode = localStorage.getItem('dark-mode')
+
+
+
+
+function isdarkMode () {
+  if(darkMode === 'activated'){
+    activateDarkMode()
+  }
+ 
+};
 
 
 // function to display all the projects 
@@ -43,6 +57,7 @@ function projectDisplay() {
       projectDelete.addEventListener('click', deleteProject);
       projectsContainer.appendChild(projectElement);
     });
+
   }
 
 
@@ -65,7 +80,11 @@ function createProjectDisplay(project){
   
     projectElement.classList.add('project-element');
     projectElement.style.backgroundColor = project.backgroundColor
-  
+    if(darkMode === 'activated'){
+      projectElement.classList.add('dark-theme')
+    } 
+
+
     return projectElement;
 }
 
@@ -101,6 +120,7 @@ function deleteProject(event){
 
 function closeProject(){
  location.reload()
+ isdarkMode()
 
 
 }
@@ -321,7 +341,32 @@ function displayDetails(event){
      }
 
 
+// dark mode
 
+function activateDarkMode(){
+  body.classList.add('dark-theme')
+  newProjectFormSection.classList.add('dark-theme')
+  localStorage.setItem('dark-mode', 'activated')
+}
+
+function deactivateDarkMode(){
+  body.classList.remove('dark-theme')
+  newProjectFormSection.classList.remove('dark-theme')
+  localStorage.setItem('dark-mode', 'deactivated')
+}
+
+
+function changeMode(){
+  darkMode = localStorage.getItem("dark-mode"); // update darkMode when clicked
+  if (darkMode === "deactivated") {
+    activateDarkMode();
+  } else {
+    deactivateDarkMode();
+  }
+}
+
+ darkModeBtn.addEventListener('click', changeMode)
+ document.addEventListener("DOMContentLoaded", isdarkMode)
  newProjectSection.addEventListener('click', displayCreateProject)
  projectFormSubmit.addEventListener('click', displayCreateProject)
  closeDisplay.addEventListener('click', closeProject)
