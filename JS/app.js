@@ -16,6 +16,9 @@ const done = document.getElementById("done-list")
 const onHold = document.getElementById("onhold-list")
 const statusColumn = document.querySelectorAll('.status-columns');
 const closeDisplay= document.getElementById('close-project')
+const newProjectSection =document.getElementById('addNewProject')
+const newProjectFormSection = document.getElementById('newProjectForm')
+const projectFormSubmit = document.getElementById('projectformsubmit')
 
 
 
@@ -102,19 +105,29 @@ function closeProject(){
 
 }
 
+function displayCreateProject(){
+  if(newProjectFormSection.style.display === 'block'){
+    newProjectFormSection.style.display = 'none'
+  } else{
+    newProjectFormSection.style.display = 'block'
+
+  }
+}
+
   
 
 function addProject(event){
 
         event.preventDefault()
+        event.stopPropagation()
         const newProjectName = projectName.value
         const newProjectColor = projectColor.value
 
         // console.log(newProject)
-        if(!newProjectName) return
+       if(!newProjectName) return
        const projectList = createProject(newProjectName, newProjectColor)
        projectName.value = null 
-       projectColor.value = "#FFFFFF"
+       projectColor.value = "#CC5500"
        projects.push(projectList)
        localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
        projectDisplay()
@@ -309,7 +322,8 @@ function displayDetails(event){
 
 
 
-
+ newProjectSection.addEventListener('click', displayCreateProject)
+ projectFormSubmit.addEventListener('click', displayCreateProject)
  closeDisplay.addEventListener('click', closeProject)
  addTaskForm.addEventListener('submit', submitTask)
  projectForm.addEventListener('submit', addProject)

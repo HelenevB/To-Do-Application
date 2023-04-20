@@ -13,11 +13,17 @@
     
 </head>
 <body>
-<h1 id="app-name">TO-DO APPLICATION</h1>
+<nav id="header">
+    <h1 id="app-name">TO-DO APPLICATION</h1>
+    <a id="addNewProject">Create New Project <i class="fa-solid fa-folder-plus"></i> </a> 
+    
+   
+</nav>
+
+
 
 <div id="project-section">
-<div id="addNewProject">
-    <h3>Create New Project <i class="fas fa-caret-down fa-2xl"></i> </h3> 
+
 
 <div id="newProjectForm">
 
@@ -33,21 +39,22 @@
             <input  class="project-input" type="color"  id="color-selector" value="#CC5500">
         </div>
        <div class="form-sections">
-        <input   class="project-input" type="submit"  value=" Create Project">
+        <input   class="project-input" id="projectformsubmit" type="submit"  value=" Create Project">
        </div>
     
      </form>
 
 </div>
     
-</div>
 
- 
+<div id="myprojects">  
+    <h1>My Projects</h1>
 
- <!-- display list of all projects -->
-    <div id="project-container" data-projects>
+    <!-- display list of all projects -->
+       <div id="project-container" data-projects>
+   
+       </div></div>
 
-    </div>
 </div>
 <!-- display project details and task status board for each project  -->
 <div id="project-details">

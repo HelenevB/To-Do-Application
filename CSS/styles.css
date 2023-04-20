@@ -1,13 +1,35 @@
 body{
     font-family: 'Gloria Hallelujah', cursive;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    margin: 0;
 
 }
 
+#header , #app-name , #addNewProject{
+    margin: 0;  
+    padding: 0;
+
+  
+}
+
+#header{
+
+    box-shadow: 2px 2px 5px rgb(183, 179, 179);
+    height: 50px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+ 
+}
+
+
+
 #project-container{
-    width: 100vw;
+   
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20%,1fr));
-    grid-auto-rows: 50%;
+    grid-template-columns: repeat(auto-fill, minmax(25%,1fr));
 }
 
 .project-element{
@@ -66,15 +88,19 @@ body{
 
 #addNewProject{
     width: 25vw;
+    text-decoration:none ;
 
 }
+
 #newProjectForm{
+    display: none;
     border: dotted 2px black;
     border-radius: 25px;
     width: 25vw;
     position:relative;
-    z-index: 1;
+    /* z-index: 1; */
     background-color: #FFFFFF;
+    margin: 50px auto;
 }
 
 
@@ -97,7 +123,11 @@ body{
 #project-name {
     height: 20px;
 }
-
+#myprojects {
+    text-align: center;
+    width: 80%;
+    margin: auto;
+}
 
 /* project detail displays */
 
