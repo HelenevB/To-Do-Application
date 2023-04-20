@@ -1,13 +1,14 @@
+const appTitle = document.getElementById('app-name')
 const projectSection = document.getElementById('project-section')
 const projectsContainer = document.querySelector('[data-projects]');
 const projectForm = document.querySelector('[data-new-project-form]');
 const projectName = document.querySelector('[data-new-project-name]');
-const projectColor = document.getElementById('project-color')
+const projectColor = document.getElementById("color-selector")
 const taskName = document.querySelector('[data-new-task-name]');
 const addTaskForm = document.querySelector('[data-new-task]');
 const addTask = document.getElementById("add-Task");
 const displayProject = document.getElementById("project-details");
-const projectTitle = document.getElementById("project-title");
+const displayHeading = document.getElementById("display-heading");
 const taskList = document.querySelectorAll('.task-list');
 const toDo = document.getElementById('todo-list');
 const doing = document.getElementById("doing-list")
@@ -46,7 +47,7 @@ function projectDisplay() {
 function createProjectDisplay(project){
 
     const projectElement = document.createElement('div');
-    const projectHeading = document.createElement('h3');
+    const projectHeading = document.createElement('h2');
     const projectCreated = document.createElement('p');
   
     [projectElement, projectHeading, projectCreated].forEach((el) => {
@@ -79,7 +80,7 @@ function createDeleteButton(project) {
 //   add event listeners to the project 
   function addProjectEventListeners(projectElement) {
     projectElement.addEventListener('click', displayDetails);
-    projectElement.querySelector('h3').addEventListener('click', displayDetails);
+    projectElement.querySelector('h2').addEventListener('click', displayDetails);
     projectElement.querySelector('p').addEventListener('click', displayDetails);
   }
 
@@ -102,7 +103,6 @@ function closeProject(){
 }
 
   
-// function to add a new projet 
 
 function addProject(event){
 
@@ -168,6 +168,7 @@ function submitTask(event){
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
   dragAndDropTask(projects[currentProject])
    console.log(projects[currentProject].tasks)
+   taskDelete.addEventListener("click", projectTaskDelete)
 
  }
 
@@ -212,8 +213,8 @@ function displayDetails(event){
     displayProject.style.display='block'
     const projectId =event.currentTarget.getAttribute('data-project-identifier');
     const project = projects.find((project) => project.id === projectId);
-
-     projectTitle.innerText = project.name
+   console.log(project.name)
+     displayHeading.innerText= project.name
      displayProject.setAttribute('data-project-identifier', project.id)
 
           clearProject(toDo)
@@ -312,5 +313,6 @@ function displayDetails(event){
  closeDisplay.addEventListener('click', closeProject)
  addTaskForm.addEventListener('submit', submitTask)
  projectForm.addEventListener('submit', addProject)
+ appTitle.addEventListener('click', closeProject)
  
 projectDisplay()
