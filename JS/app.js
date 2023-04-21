@@ -1,6 +1,7 @@
 const appTitle = document.getElementById('app-name')
 const projectSection = document.getElementById('project-section')
 const projectsContainer = document.querySelector('[data-projects]');
+const myProjectsGrid = document.getElementById('myprojects')
 const projectForm = document.querySelector('[data-new-project-form]');
 const projectName = document.querySelector('[data-new-project-name]');
 const projectColor = document.getElementById("color-selector")
@@ -156,8 +157,10 @@ location.reload()
 function displayCreateProject(){
   if(newProjectFormSection.style.display === 'block'){
     newProjectFormSection.style.display = 'none'
+    myProjectsGrid.classList.remove('blurgrid')
   } else{
     newProjectFormSection.style.display = 'block'
+    myProjectsGrid.classList.add('blurgrid')
  
   }
 }
