@@ -49,7 +49,7 @@ function projectDisplay() {
     clearProject(projectsContainer);
   
     projects.forEach((project) => {
-      const projectElement = createProjectDisplay(project, darkMode);
+      const projectElement = createProjectDisplay(project);
       const projectDelete = createDeleteButton(project);
   
       projectElement.appendChild(projectDelete);
@@ -63,7 +63,7 @@ function projectDisplay() {
 
 
 //   funtion built to create the project section 
-function createProjectDisplay(project, darkMode){
+function createProjectDisplay(project){
 
     const projectElement = document.createElement('div');
     const projectHeading = document.createElement('h2');
@@ -81,10 +81,6 @@ function createProjectDisplay(project, darkMode){
   
     projectElement.classList.add('project-element');
     projectElement.style.backgroundColor = project.backgroundColor
-
-    if (darkMode === 'deactivated') {
-      projectElement.classList.add('dark-theme');
-    }
 
 
     return projectElement;
@@ -121,9 +117,7 @@ function deleteProject(event){
 }
 
 function closeProject(){
- location.reload()
- isdarkMode()
-
+location.reload()
 
 }
 
@@ -218,6 +212,7 @@ function submitTask(event){
 }
 
 function projectTaskDelete(e){
+  const currentTaskElement = e.target.closest(".task")
   const taskId =e.target.getAttribute('id')
   const currentProjectId = displayProject.getAttribute('data-project-identifier');
   console.log(currentProjectId)
@@ -228,9 +223,13 @@ function projectTaskDelete(e){
   currentProject.tasks.splice(taskIndex, 1)
   console.log("task has been deleted ")
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-  const projectElement = document.querySelector(`[data-project-identifier="${currentProjectId}"]`);
-  const clickEvent = new Event('click');
-  projectElement.dispatchEvent(clickEvent);
+  currentTaskElement.remove()
+
+  // removed because it causing duplication
+  // const projectElement = document.querySelector(`[data-project-identifier="${currentProjectId}"]`);
+  // const clickEvent = new Event('click');
+  // projectElement.dispatchEvent(clickEvent);
+  console.log(currentProject.tasks)
     
 
 }
@@ -289,7 +288,7 @@ function displayDetails(event){
              
     
                   taskDelete.addEventListener("click", projectTaskDelete)
-
+                  taskDelete.setAttribute('data-task-identifier', task.id);
                 })
 
                  dragAndDropTask(project)  
@@ -327,11 +326,15 @@ function displayDetails(event){
               console.log(currentProjectId)
               console.log(displayProjectId)
               if(currentProjectId ===  displayProjectId){
-                column.appendChild(draggedItem)
-                localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+               column.appendChild(draggedItem)
+              localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+             
+
+
+
                 console.log(project.tasks)
               
-      
+
               } 
             });
           
@@ -349,6 +352,7 @@ function activateDarkMode(){
  
   body.classList.add('dark-theme')
   newProjectFormSection.classList.add('dark-theme')
+  projectsContainer.classList.add('dark-theme')
   localStorage.setItem('dark-mode', 'activated')
    
 }
@@ -357,6 +361,7 @@ function deactivateDarkMode(){
 
   body.classList.remove('dark-theme')
   newProjectFormSection.classList.remove('dark-theme')
+  projectsContainer.classList.remove('dark-theme')
   localStorage.setItem('dark-mode', 'deactivated')
 
 }
@@ -370,7 +375,6 @@ function changeMode(){
     deactivateDarkMode();
   }
 
-  projectDisplay()
 }
 
  darkModeBtn.addEventListener('click', changeMode)
