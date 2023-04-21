@@ -24,6 +24,7 @@ const body = document.querySelector('body')
 
 
 
+
 const LOCAL_STORAGE_PROJECT_LIST = 'projects.list'
 
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_LIST)) || []
@@ -38,7 +39,6 @@ function isdarkMode () {
   if(darkMode === 'activated'){
     activateDarkMode()
   }
- 
 };
 
 
@@ -49,20 +49,21 @@ function projectDisplay() {
     clearProject(projectsContainer);
   
     projects.forEach((project) => {
-      const projectElement = createProjectDisplay(project);
+      const projectElement = createProjectDisplay(project, darkMode);
       const projectDelete = createDeleteButton(project);
   
       projectElement.appendChild(projectDelete);
       addProjectEventListeners(projectElement);
       projectDelete.addEventListener('click', deleteProject);
       projectsContainer.appendChild(projectElement);
+      
     });
 
   }
 
 
 //   funtion built to create the project section 
-function createProjectDisplay(project){
+function createProjectDisplay(project, darkMode){
 
     const projectElement = document.createElement('div');
     const projectHeading = document.createElement('h2');
@@ -80,9 +81,10 @@ function createProjectDisplay(project){
   
     projectElement.classList.add('project-element');
     projectElement.style.backgroundColor = project.backgroundColor
-    if(darkMode === 'activated'){
-      projectElement.classList.add('dark-theme')
-    } 
+
+    if (darkMode === 'deactivated') {
+      projectElement.classList.add('dark-theme');
+    }
 
 
     return projectElement;
@@ -344,15 +346,19 @@ function displayDetails(event){
 // dark mode
 
 function activateDarkMode(){
+ 
   body.classList.add('dark-theme')
   newProjectFormSection.classList.add('dark-theme')
   localStorage.setItem('dark-mode', 'activated')
+   
 }
 
 function deactivateDarkMode(){
+
   body.classList.remove('dark-theme')
   newProjectFormSection.classList.remove('dark-theme')
   localStorage.setItem('dark-mode', 'deactivated')
+
 }
 
 
@@ -363,6 +369,8 @@ function changeMode(){
   } else {
     deactivateDarkMode();
   }
+
+  projectDisplay()
 }
 
  darkModeBtn.addEventListener('click', changeMode)
