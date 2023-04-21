@@ -16,7 +16,6 @@ const done = document.getElementById("done-list")
 const onHold = document.getElementById("onhold-list")
 const statusColumn = document.querySelectorAll('.status-columns');
 const closeDisplay= document.getElementById('close-project')
-const newProjectSection =document.getElementById('addNewProject')
 const newProjectFormSection = document.getElementById('newProjectForm')
 const projectFormSubmit = document.getElementById('projectformsubmit')
 const darkModeBtn =document.getElementById('dark-mode')
@@ -42,12 +41,40 @@ function isdarkMode () {
 };
 
 
+
+function createAddProject (){
+
+
+  const projectElement = document.createElement('div');
+  const projectHeading = document.createElement('h2');
+  const projectP = document.createElement('p')
+ 
+  if(projects.length === 0 ){
+   projectHeading.innerText = `Create your first project`
+
+  } else{
+
+    projectHeading.innerText = `Add a new project`
+
+  }
+  projectP.innerHTML=`<i class="fa-solid fa-folder-plus"></i> `
+  projectElement.appendChild(projectHeading);
+  projectHeading.appendChild(projectP)
+  projectsContainer.appendChild(projectElement)
+  projectHeading.addEventListener('click' , displayCreateProject)
+  projectElement.setAttribute('id', "noprojectdisplay")
+
+  return projectElement 
+}
 // function to display all the projects 
 
 function projectDisplay() {
 
     clearProject(projectsContainer);
-  
+
+    const addProjectContainer = createAddProject()
+    projectsContainer.appendChild(addProjectContainer)
+
     projects.forEach((project) => {
       const projectElement = createProjectDisplay(project);
       const projectDelete = createDeleteButton(project);
@@ -55,11 +82,16 @@ function projectDisplay() {
       projectElement.appendChild(projectDelete);
       addProjectEventListeners(projectElement);
       projectDelete.addEventListener('click', deleteProject);
-      projectsContainer.appendChild(projectElement);
-      
+      projectsContainer.appendChild(projectElement)
+      projectsContainer.insertBefore(projectElement,addProjectContainer , projectFormSubmit)
+    
     });
 
   }
+
+    
+
+  
 
 
 //   funtion built to create the project section 
@@ -126,7 +158,7 @@ function displayCreateProject(){
     newProjectFormSection.style.display = 'none'
   } else{
     newProjectFormSection.style.display = 'block'
-
+ 
   }
 }
 
@@ -379,7 +411,6 @@ function changeMode(){
 
  darkModeBtn.addEventListener('click', changeMode)
  document.addEventListener("DOMContentLoaded", isdarkMode)
- newProjectSection.addEventListener('click', displayCreateProject)
  projectFormSubmit.addEventListener('click', displayCreateProject)
  closeDisplay.addEventListener('click', closeProject)
  addTaskForm.addEventListener('submit', submitTask)
