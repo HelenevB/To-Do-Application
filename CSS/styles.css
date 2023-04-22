@@ -4,7 +4,10 @@ body{
     box-sizing: border-box;
     margin: 0;
     background-color: rgb(239, 234, 234);
+ 
 }
+
+
 
 #header , #app-name , #addNewProject{
     margin: 0;  
@@ -69,6 +72,7 @@ body{
     right:5%;
     border: none;
    color: white;
+   font-family: 'Gloria Hallelujah', cursive;
 
 }
 
@@ -107,7 +111,7 @@ body{
 .form-sections{
     padding: 10px 0;
 }
-.project-input{
+.form-input{
     font-family:'Gloria Hallelujah', cursive ;
     width: 100%;
     border-radius: 10px;
@@ -168,8 +172,10 @@ body{
 #project-details{
     display: none;
     border-radius: 20px;
-    width: 100vw;
-    margin-top: 10px;
+    width: 98vw;
+    margin: 10px auto;
+    align-items: center;
+    
     height: 100vh;
 }
 
@@ -189,9 +195,20 @@ body{
 /* to-do form  */
 
 #add-task{
-   /* padding-left: 1%; */
-   margin-top: 2.5px;
+  display: flex;
+  flex-direction: row;
+  width: 40vw;
+  margin-top: 2.5px;
+  gap: 10px
+
+  
 }
+
+#add-task input[type="submit"]{
+    width: 10vw;
+}
+
+
 
 /* boards */
 
@@ -220,7 +237,17 @@ body{
     border-radius: 5px;
     margin: 3% 0;
     padding: 2%;
+    cursor: grab;
 }
+
+.dragging {
+    background-color:rgb(44, 55, 79);
+    opacity: 0.1;
+    color: whitesmoke;
+    cursor: grab;
+    
+}
+
 
 .taskdelete-button{
     position: absolute;
@@ -234,7 +261,10 @@ body{
 .task:hover .taskdelete-button{
     background-color: inherit;
     display: inline-block;
+}
 
+.dragging:hover .taskdelete-button {
+    display: none;
 }
 
 

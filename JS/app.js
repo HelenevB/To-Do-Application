@@ -293,7 +293,8 @@ function displayDetails(event){
           clearProject(doing)
           clearProject(done)
           clearProject(onHold)
-  
+
+        
           project.tasks.forEach((task) => {
          
                 const allTaskDisplay = document.createElement('p')
