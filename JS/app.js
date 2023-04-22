@@ -19,8 +19,10 @@ const statusColumn = document.querySelectorAll('.status-columns');
 const closeDisplay= document.getElementById('close-project')
 const newProjectFormSection = document.getElementById('newProjectForm')
 const projectFormSubmit = document.getElementById('projectformsubmit')
+const formClose = document.getElementById('form-close')
 const darkModeBtn =document.getElementById('dark-mode')
 const body = document.querySelector('body')
+
 
 
 
@@ -72,6 +74,8 @@ function createAddProject (){
 function projectDisplay() {
 
     clearProject(projectsContainer);
+    newProjectFormSection.style.display = 'none'
+    myProjectsGrid.classList.remove('blurgrid')
 
     const addProjectContainer = createAddProject()
     projectsContainer.appendChild(addProjectContainer)
@@ -155,17 +159,16 @@ location.reload()
 }
 
 function displayCreateProject(){
-  if(newProjectFormSection.style.display === 'block'){
-    newProjectFormSection.style.display = 'none'
-    myProjectsGrid.classList.remove('blurgrid')
-  } else{
+  // if(newProjectFormSection.style.display === 'block'){
+  //   newProjectFormSection.style.display = 'none'
+  //   myProjectsGrid.classList.remove('blurgrid')
+  // } else{
     newProjectFormSection.style.display = 'block'
     myProjectsGrid.classList.add('blurgrid')
  
   }
-}
 
-  
+
 
 function addProject(event){
 
@@ -414,7 +417,7 @@ function changeMode(){
 
  darkModeBtn.addEventListener('click', changeMode)
  document.addEventListener("DOMContentLoaded", isdarkMode)
- projectFormSubmit.addEventListener('click', displayCreateProject)
+ formClose.addEventListener('click', projectDisplay)
  closeDisplay.addEventListener('click', closeProject)
  addTaskForm.addEventListener('submit', submitTask)
  projectForm.addEventListener('submit', addProject)
