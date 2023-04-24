@@ -89,9 +89,11 @@ function projectDisplay() {
       projectDelete.addEventListener('click', deleteProject);
       projectsContainer.appendChild(projectElement)
       projectsContainer.insertBefore(projectElement,addProjectContainer , projectFormSubmit)
+
     
     });
 
+    isdarkMode()
   }
 
     
@@ -105,20 +107,27 @@ function createProjectDisplay(project){
     const projectElement = document.createElement('div');
     const projectHeading = document.createElement('h2');
     const projectCreated = document.createElement('p');
+   
+
   
     [projectElement, projectHeading, projectCreated].forEach((el) => {
       el.setAttribute('data-project-identifier', project.id);
     });
   
+    projectCreated.setAttribute('id', 'project-created')
+
     projectHeading.innerText = project.name;
     projectCreated.innerText = ` Created: ${project.createdDate}`;
+   
   
     projectElement.appendChild(projectHeading);
     projectElement.appendChild(projectCreated);
   
+  
     projectElement.classList.add('project-element');
     projectElement.style.backgroundColor = project.backgroundColor
 
+    taskCount(project, projectElement)
 
     return projectElement;
 }
@@ -272,6 +281,57 @@ function projectTaskDelete(e){
 
 }
 
+function taskCount(project , projectElement){
+ const projectTask = project.tasks
+ const taskTotal = document.createElement('p')
+ const toDo = document.createElement('p')
+ const doing = document.createElement('p')
+ const done = document.createElement('p')
+ const onHold = document.createElement('p')
+ let totalTask= 0
+ let toDoTask = 0
+ let doingTask = 0
+ let doneTask = 0
+ let onHoldTask = 0
+
+  for(let i = 0; i < projectTask.length; i++){
+    totalTask ++
+    if(projectTask[i].status === 'todo'){
+      toDoTask ++
+    } else if(projectTask[i].status === 'doing'){
+      doingTask ++
+
+    } else if(projectTask[i].status === 'done'){
+      doneTask ++
+
+    } else if(projectTask[i].status === 'onhold'){
+      onHoldTask ++
+    } else {
+
+    }
+  
+ 
+  }
+  
+  [taskTotal, toDo, doing, done, onHold].forEach(paragraph =>{
+    paragraph.classList.add("task-summary")
+  })
+
+  taskTotal.setAttribute('id', 'task-total')
+  
+  taskTotal.innerText = ` Total Tasks: ${totalTask}`
+  toDo.innerText = `To-do : ${toDoTask}`
+  doing.innerText= `In Progress: ${doingTask}`
+  done.innerText=` Complete: ${doneTask}`
+  onHold.innerText = `On-Hold ${onHoldTask}`
+  projectElement.appendChild(taskTotal)
+  projectElement.appendChild(toDo)
+  projectElement.appendChild(doing)
+  projectElement.appendChild(done)
+  projectElement.appendChild(onHold)
+
+
+}
 
 
 function clearProject(element){
@@ -319,10 +379,12 @@ function displayDetails(event){
     
                 allTaskDisplay.addEventListener('dragstart', () => {
                     allTaskDisplay.classList.add("dragging");
+                
                   });
         
                 allTaskDisplay.addEventListener("dragend", ()=>{
                     allTaskDisplay.classList.remove("dragging");
+          
                   });
              
     
@@ -393,6 +455,8 @@ function activateDarkMode(){
   newProjectFormSection.classList.add('dark-theme')
   projectsContainer.classList.add('dark-theme')
   localStorage.setItem('dark-mode', 'activated')
+  darkModeBtn.innerHTML = '<i class="far fa-lightbulb"></i>'
+  
    
 }
 
@@ -402,6 +466,8 @@ function deactivateDarkMode(){
   newProjectFormSection.classList.remove('dark-theme')
   projectsContainer.classList.remove('dark-theme')
   localStorage.setItem('dark-mode', 'deactivated')
+  darkModeBtn.innerHTML = '<i class="fa-solid fa-lightbulb"></i>'
+ 
 
 }
 
@@ -410,8 +476,10 @@ function changeMode(){
   darkMode = localStorage.getItem("dark-mode"); // update darkMode when clicked
   if (darkMode === "deactivated") {
     activateDarkMode();
+   
   } else {
     deactivateDarkMode();
+  
   }
 
 }
