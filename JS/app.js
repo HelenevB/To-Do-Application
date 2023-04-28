@@ -41,6 +41,12 @@ function isdarkMode () {
   if(darkMode === 'activated'){
     activateDarkMode()
   }
+  if(darkMode === 'activated'){
+    darkModeBtn.innerHTML = '  <i  class="far fa-lightbulb"></i>'
+  } else {
+    darkModeBtn.innerHTML=  ' <i class="fa-solid fa-lightbulb"></i>'
+  }
+
 };
 
 
@@ -127,7 +133,7 @@ function createProjectDisplay(project){
     projectElement.classList.add('project-element');
     projectElement.style.backgroundColor = project.backgroundColor
 
-    taskCount(project, projectElement)
+    taskSummaryDisplay(project, projectElement) 
 
     return projectElement;
 }
@@ -203,7 +209,7 @@ function createProject(name, color){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color , status: ""}
 
 }
 
@@ -281,14 +287,44 @@ function projectTaskDelete(e){
 
 }
 
-function taskCount(project , projectElement){
- const projectTask = project.tasks
+
+function taskSummaryDisplay(project, projectElement){
+ const taskSummary =document.createElement('div')
  const taskTotal = document.createElement('p')
  const toDo = document.createElement('p')
  const doing = document.createElement('p')
  const done = document.createElement('p')
  const onHold = document.createElement('p')
- let totalTask= 0
+
+toDo.classList.add("task-summary")
+doing.classList.add("task-summary")
+done.classList.add("task-summary")
+onHold.classList.add("task-summary")
+
+
+  taskTotal.setAttribute('id', 'task-total')
+  
+
+  projectElement.appendChild(taskSummary)
+
+ taskSummary.appendChild(taskTotal)
+ taskSummary.appendChild(toDo)
+ taskSummary.appendChild(doing)
+ taskSummary.appendChild(done)
+ taskSummary.appendChild(onHold)
+
+ 
+
+
+ taskCounts(project, taskTotal, toDo, doing, done, onHold);
+   
+
+}
+
+function taskCounts(project, taskTotal, toDo, doing, done, onHold){
+
+  const projectTask = project.tasks
+  let totalTask= 0
  let toDoTask = 0
  let doingTask = 0
  let doneTask = 0
@@ -312,24 +348,12 @@ function taskCount(project , projectElement){
   
  
   }
-  
-  [taskTotal, toDo, doing, done, onHold].forEach(paragraph =>{
-    paragraph.classList.add("task-summary")
-  })
 
-  taskTotal.setAttribute('id', 'task-total')
-  
   taskTotal.innerText = ` Total Tasks: ${totalTask}`
   toDo.innerText = `To-do : ${toDoTask}`
   doing.innerText= `In Progress: ${doingTask}`
   done.innerText=` Complete: ${doneTask}`
   onHold.innerText = `On-Hold ${onHoldTask}`
-  projectElement.appendChild(taskTotal)
-  projectElement.appendChild(toDo)
-  projectElement.appendChild(doing)
-  projectElement.appendChild(done)
-  projectElement.appendChild(onHold)
-
 
 }
 
@@ -454,6 +478,7 @@ function activateDarkMode(){
   body.classList.add('dark-theme')
   newProjectFormSection.classList.add('dark-theme')
   projectsContainer.classList.add('dark-theme')
+  darkModeBtn.classList.add('dark-theme')
   localStorage.setItem('dark-mode', 'activated')
   darkModeBtn.innerHTML = '<i class="far fa-lightbulb"></i>'
   
@@ -465,6 +490,7 @@ function deactivateDarkMode(){
   body.classList.remove('dark-theme')
   newProjectFormSection.classList.remove('dark-theme')
   projectsContainer.classList.remove('dark-theme')
+  darkModeBtn.classList.remove('dark-theme')
   localStorage.setItem('dark-mode', 'deactivated')
   darkModeBtn.innerHTML = '<i class="fa-solid fa-lightbulb"></i>'
  

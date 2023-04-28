@@ -282,6 +282,13 @@ body{
 }
 
 
+#dark-mode{
+    border: none;
+    font-size: large;
+    background-color: inherit;
+}
+
+
 /* dark theme */
 
 .dark-theme {
@@ -305,3 +312,5 @@ body{
 .dark-theme #newProjectForm {
     background-color:#36454F; 
 }
+
+
