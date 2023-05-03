@@ -90,7 +90,11 @@ body{
     display: none;
 }
 
-.blurgrid .project-element:hover {
+ .blurgrid .project-element:hover {
+    box-shadow: none;
+}
+
+.completed.project-element:hover {
     box-shadow: none;
 }
 
@@ -316,6 +320,15 @@ body{
 .dark-theme   #project-container > .project-element:hover{
     box-shadow: 0 0 40px rgb(247, 229, 229) inset;
 }
+
+.dark-theme  .blurgrid #project-container > .project-element:hover {
+    box-shadow: none;
+}
+
+.dark-theme  #project-container > .completed.project-element:hover {
+    box-shadow: none;
+}
+
 
 .dark-theme #newProjectForm {
     background-color:#36454F; 

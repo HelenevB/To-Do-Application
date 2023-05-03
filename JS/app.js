@@ -90,7 +90,6 @@ function projectDisplay() {
     projects.forEach((project) => {
       const projectElement = createProjectDisplay(project);
       const projectDelete = createDeleteButton(project);
-
       projectElement.appendChild(projectDelete);
       addProjectEventListeners(projectElement);
       projectDelete.addEventListener('click', deleteProject);
@@ -134,8 +133,16 @@ function createProjectDisplay(project){
   
   
     projectElement.classList.add('project-element');
-    projectElement.style.backgroundColor = project.backgroundColor
+    if(project.isComplete){
+      projectElement.classList.add('completed');
+      projectElement.style.backgroundColor = project.backgroundColor
+      projectElement.style.opacity = "0.6"
+    } else{
+      projectElement.style.backgroundColor = project.backgroundColor
 
+
+    }
+   
     taskSummaryDisplay(project, projectElement) 
     displayStatus(project, projectElement)
     
@@ -248,6 +255,7 @@ function submitTask(event){
   newTaskDisplay.setAttribute('draggable' ,true)
   newTaskDisplay.innerText = newTask.name
   newTaskDisplay.appendChild(taskDelete)
+  
 
 
   newTaskDisplay.addEventListener('dragstart', () => {
@@ -259,9 +267,8 @@ function submitTask(event){
     });
  
   toDo.appendChild(newTaskDisplay)
-  taskDelete.addEventListener("click", projectTaskDelete)
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-  dragAndDropTask(projects[currentProject])
+   dragAndDropTask(projects[currentProject])
    console.log(projects[currentProject].tasks)
    taskDelete.addEventListener("click", projectTaskDelete)
 
@@ -456,6 +463,10 @@ function displayDetails(event){
    console.log(project.name)
      displayHeading.innerText= project.name
      displayProject.setAttribute('data-project-identifier', project.id)
+    
+     if(project.isComplete){
+      addTaskForm.style.display="none"
+     }
 
           clearProject(toDo)
           clearProject(doing)
@@ -467,11 +478,20 @@ function displayDetails(event){
          
                 const allTaskDisplay = document.createElement('p')
                 const taskDelete = createTaskDeleteButton(task)
-                allTaskDisplay.classList.add('task')
-                allTaskDisplay.setAttribute('data-task-id', task.id)
-                allTaskDisplay.setAttribute('draggable' ,true)
-                allTaskDisplay.innerText = task.name
-                allTaskDisplay.appendChild(taskDelete)
+                if(!project.isComplete){
+                  allTaskDisplay.classList.add('task')
+                  allTaskDisplay.setAttribute('data-task-id', task.id)
+                  allTaskDisplay.setAttribute('draggable' ,true)
+                  allTaskDisplay.innerText = task.name
+                  allTaskDisplay.appendChild(taskDelete)
+              
+                } else{
+                  allTaskDisplay.classList.add('task')
+                  allTaskDisplay.setAttribute('data-task-id', task.id)
+                  allTaskDisplay.innerText = task.name
+               
+                }
+           
                 if(task.status === 'todo'){
                 toDo.appendChild(allTaskDisplay) 
                 } else if(task.status === "doing"){
@@ -540,23 +560,24 @@ function displayDetails(event){
               console.log(currentProjectId)
               console.log(displayProjectId)
               if(currentProjectId ===  displayProjectId){
-               column.appendChild(draggedItem)
-              localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-             
-
-                console.log(project.tasks)
-              
-
-              } 
+              column.appendChild(draggedItem)
               projectStatus(project)
+              localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+              console.log(project.isComplete)
+              console.log(project.tasks)
+          
+          
+              } 
+
+           
             });
           
          
 
-    
+          
         });
 
-       
+        
 
      }
 
