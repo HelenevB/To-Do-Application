@@ -86,6 +86,14 @@ body{
     display: inline-block;
 }
 
+.blurgrid .project-element:hover .delete-button{
+    display: none;
+}
+
+.blurgrid .project-element:hover {
+    box-shadow: none;
+}
+
 #project-form{
   display: flex;
   flex-direction: column;
@@ -178,7 +186,7 @@ body{
 #task-total{
     text-align: center;
     margin-top: 0px;
-    border-bottom: #FFFFFF dotted 1px;
+    /* border-bottom: #FFFFFF dotted 1px; */
     font-size: medium;
 }
 /* project detail displays */

@@ -37,6 +37,7 @@ let darkMode = localStorage.getItem('dark-mode')
 
 
 
+
 function isdarkMode () {
   if(darkMode === 'activated'){
     activateDarkMode()
@@ -89,13 +90,15 @@ function projectDisplay() {
     projects.forEach((project) => {
       const projectElement = createProjectDisplay(project);
       const projectDelete = createDeleteButton(project);
-  
+
       projectElement.appendChild(projectDelete);
       addProjectEventListeners(projectElement);
       projectDelete.addEventListener('click', deleteProject);
       projectsContainer.appendChild(projectElement)
-      projectsContainer.insertBefore(projectElement,addProjectContainer , projectFormSubmit)
-
+      addProjectContainer.after(projectElement)
+      // projectsContainer.insertBefore(projectElement, addProjectContainer , projectFormSubmit)
+  
+      // projectStatus(project)
     
     });
 
@@ -134,6 +137,8 @@ function createProjectDisplay(project){
     projectElement.style.backgroundColor = project.backgroundColor
 
     taskSummaryDisplay(project, projectElement) 
+    displayStatus(project, projectElement)
+    
 
     return projectElement;
 }
@@ -156,6 +161,12 @@ function createDeleteButton(project) {
     projectElement.querySelector('p').addEventListener('click', displayDetails);
   }
 
+  function removeProjectEventListeners(projectElement) {
+    projectElement.removeEventListener('click', displayDetails);
+    projectElement.querySelector('h2').removeEventListener('click', displayDetails);
+    projectElement.querySelector('p').removeEventListener('click', displayDetails);
+  }
+
 //   function to delete the project 
 
 function deleteProject(event){
@@ -174,13 +185,15 @@ location.reload()
 }
 
 function displayCreateProject(){
-  // if(newProjectFormSection.style.display === 'block'){
-  //   newProjectFormSection.style.display = 'none'
-  //   myProjectsGrid.classList.remove('blurgrid')
-  // } else{
+
+  const projectElements = document.querySelectorAll('.project-element');
+  projectElements.forEach((projectElement) => {
+    removeProjectEventListeners(projectElement);
+  });
+
     newProjectFormSection.style.display = 'block'
     myProjectsGrid.classList.add('blurgrid')
- 
+
   }
 
 
@@ -209,7 +222,7 @@ function createProject(name, color){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color , projectStatus: "" , completeDate: ""}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color , projectStatus: "" , completeDate: "", isComplete: false}
 
 }
 
@@ -289,6 +302,7 @@ function projectTaskDelete(e){
 
 
 function taskSummaryDisplay(project, projectElement){
+ const counts =taskCounts(project)
  const taskSummary =document.createElement('div')
  const taskTotal = document.createElement('p')
  const toDo = document.createElement('p')
@@ -314,14 +328,15 @@ onHold.classList.add("task-summary")
  taskSummary.appendChild(onHold)
 
  
-
-
- taskCounts(project, projectElement, taskTotal, toDo, doing, done, onHold);
-   
-
+ taskTotal.innerText = ` Total Tasks: ${counts.totalTask}`
+ toDo.innerText = `To-do : ${counts.toDoTask}`
+ doing.innerText= `In Progress: ${counts.doingTask}`
+ done.innerText=` Complete: ${counts.doneTask}`
+ onHold.innerText = `On-Hold ${counts.onHoldTask}`
+  
 }
 
-function taskCounts(project, projectElement, taskTotal, toDo, doing, done, onHold){
+function taskCounts(project){
 
   const projectTask = project.tasks
   let totalTask= 0
@@ -349,52 +364,88 @@ function taskCounts(project, projectElement, taskTotal, toDo, doing, done, onHol
  
   }
 
-  taskTotal.innerText = ` Total Tasks: ${totalTask}`
-  toDo.innerText = `To-do : ${toDoTask}`
-  doing.innerText= `In Progress: ${doingTask}`
-  done.innerText=` Complete: ${doneTask}`
-  onHold.innerText = `On-Hold ${onHoldTask}`
+  return {totalTask, toDoTask, doingTask, doneTask, onHoldTask}
 
 
-  projectStatus(project, projectElement, totalTask, doingTask, doneTask, onHoldTask)
 
 }
 
-function projectStatus(project, projectElement, totalTask, doingTask, doneTask, onHoldTask){
-  const completeCount = onHoldTask + doneTask
-  const statusDisplay = document.createElement('p')
-  projectElement.insertBefore(statusDisplay, projectElement.children[2])
+function projectStatus(project){
 
-  if(doingTask > 0 || doneTask > 0 && doneTask < totalTask && onHoldTask === 0){
-    project.projectStatus = "in-progress"
-    statusDisplay.innerText = "Status: In Progress"
+  const counts = taskCounts(project)
+  const completeCount = counts.doneTask + counts.onHoldTask
+  if(counts.doingTask > 0 || counts.doneTask > 0 && counts.doneTask < counts.totalTask && counts.onHoldTask === 0){
+    project.projectStatus = "In-Progress"
+    project.isComplete = false
+    // console.log(project.projectStatus)
+  }else if(counts.doneTask === counts.totalTask && counts.totalTask > 0){
+    project.projectStatus = "Complete"
+    project.isComplete = true
+    const date = new Date()
+    const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
+    const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
+    project.completeDate = formatDate
+    // console.log(project.projectStatus)
+
+
+
+
+  } else if (counts.totalTask > 0 && counts.onHoldTask === counts.totalTask){
+    project.projectStatus = "On-Hold"
+    project.isComplete = false
+
+  }
+  
+  else if ( completeCount === counts.totalTask  && counts.totalTask > 0){
+    if(!project.isComplete){
+    let confirmCompletion = confirm("Would you like to complete this project with Task on hold?")
+    if(confirmCompletion){
+      project.projectStatus = "Complete"
+      project.isComplete = true
+      const date = new Date()
+      const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
+      const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
+      project.completeDate = formatDate
+      console.log(project.projectStatus)
+    } else{
+      project.projectStatus = "in-progress"
+      console.log(project.projectStatus)
+    }
+    }
+
+  } else if(counts.totalTask === counts.toDoTask){
     
-  }else if(doneTask === totalTask && totalTask > 0){
-    project.projectStatus = "Complete"
-    const date = new Date()
-    const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
-    const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    project.completeDate = formatDate
-    statusDisplay.innerText = `Completed: ${project.completeDate}`
-  } else if ( completeCount === totalTask  && totalTask > 0){
-    project.projectStatus = "Complete"
-    const date = new Date()
-    const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
-    const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    project.completeDate = formatDate
-    statusDisplay.innerText = `Completed: ${project.completeDate}`
+    project.projectStatus = ""
+
+
+  } else {
 
   }
-  else {
-
-  }
+  localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+  console.log(projects)
 }
 
+
+function displayStatus(project, projectElement){
+
+  const projectStatus = document.createElement('p')
+  projectElement.insertBefore(projectStatus, projectElement.children[2])
+
+  if(project.isComplete){
+    projectStatus.innerText = `Completed: ${project.completeDate}`
+  } else {
+    projectStatus.innerText = `${project.projectStatus}`
+  }
+
+
+}
 
 function clearProject(element){
     while (element.firstChild)
     element.removeChild(element.firstChild)
 }
+
+
 
 
 function displayDetails(event){
@@ -450,6 +501,7 @@ function displayDetails(event){
                 })
 
                  dragAndDropTask(project)  
+ 
           }
        
            
@@ -492,18 +544,19 @@ function displayDetails(event){
               localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
              
 
-
-
                 console.log(project.tasks)
               
 
               } 
+              projectStatus(project)
             });
           
          
 
-  
+    
         });
+
+       
 
      }
 
