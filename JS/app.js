@@ -209,7 +209,7 @@ function createProject(name, color){
     const date = new Date()
     const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
     const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
-    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color , status: ""}
+    return {id: Date.now().toString(), name: name , createdDate: formatDate ,tasks:[] , backgroundColor: color , projectStatus: "" , completeDate: ""}
 
 }
 
@@ -316,12 +316,12 @@ onHold.classList.add("task-summary")
  
 
 
- taskCounts(project, taskTotal, toDo, doing, done, onHold);
+ taskCounts(project, projectElement, taskTotal, toDo, doing, done, onHold);
    
 
 }
 
-function taskCounts(project, taskTotal, toDo, doing, done, onHold){
+function taskCounts(project, projectElement, taskTotal, toDo, doing, done, onHold){
 
   const projectTask = project.tasks
   let totalTask= 0
@@ -355,6 +355,39 @@ function taskCounts(project, taskTotal, toDo, doing, done, onHold){
   done.innerText=` Complete: ${doneTask}`
   onHold.innerText = `On-Hold ${onHoldTask}`
 
+
+  projectStatus(project, projectElement, totalTask, doingTask, doneTask, onHoldTask)
+
+}
+
+function projectStatus(project, projectElement, totalTask, doingTask, doneTask, onHoldTask){
+  const completeCount = onHoldTask + doneTask
+  const statusDisplay = document.createElement('p')
+  projectElement.insertBefore(statusDisplay, projectElement.children[2])
+
+  if(doingTask > 0 || doneTask > 0 && doneTask < totalTask && onHoldTask === 0){
+    project.projectStatus = "in-progress"
+    statusDisplay.innerText = "Status: In Progress"
+    
+  }else if(doneTask === totalTask && totalTask > 0){
+    project.projectStatus = "Complete"
+    const date = new Date()
+    const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
+    const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
+    project.completeDate = formatDate
+    statusDisplay.innerText = `Completed: ${project.completeDate}`
+  } else if ( completeCount === totalTask  && totalTask > 0){
+    project.projectStatus = "Complete"
+    const date = new Date()
+    const options = { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' };
+    const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
+    project.completeDate = formatDate
+    statusDisplay.innerText = `Completed: ${project.completeDate}`
+
+  }
+  else {
+
+  }
 }
 
 
@@ -421,6 +454,10 @@ function displayDetails(event){
        
            
          
+
+    
+  
+
 
   
  
