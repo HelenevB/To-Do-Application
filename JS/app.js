@@ -248,33 +248,16 @@ function submitTask(event){
   const newTask = { name: newTaskName , id: Date.now().toString(), status:'todo'}
   projects[currentProject].tasks.push(newTask)
   taskName.value = null
-  const newTaskDisplay= document.createElement('p')
-  const taskDelete = createTaskDeleteButton(newTask)
-  newTaskDisplay.setAttribute('data-task-id', newTask.id)
-  newTaskDisplay.classList.add('task')
-  newTaskDisplay.setAttribute('draggable' ,true)
-  newTaskDisplay.innerText = newTask.name
-  newTaskDisplay.appendChild(taskDelete)
-  
 
-
-  newTaskDisplay.addEventListener('dragstart', () => {
-      newTaskDisplay.classList.add("dragging");
-    });
-    
-  newTaskDisplay.addEventListener("dragend", ()=>{
-      newTaskDisplay.classList.remove("dragging");
-    });
- 
-  toDo.appendChild(newTaskDisplay)
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-   dragAndDropTask(projects[currentProject])
    console.log(projects[currentProject].tasks)
-   taskDelete.addEventListener("click", projectTaskDelete)
+
+   displayDetails({currentTarget: {getAttribute: ()=>currentProjectId }})
 
  }
 
  function createTaskDeleteButton(task) {
+
   const taskDelete = document.createElement('button');
 
   taskDelete.setAttribute('id', task.id);
@@ -297,11 +280,6 @@ function projectTaskDelete(e){
   console.log("task has been deleted ")
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
   currentTaskElement.remove()
-
-  // removed because it causing duplication
-  // const projectElement = document.querySelector(`[data-project-identifier="${currentProjectId}"]`);
-  // const clickEvent = new Event('click');
-  // projectElement.dispatchEvent(clickEvent);
   console.log(currentProject.tasks)
     
 
@@ -385,7 +363,7 @@ function projectStatus(project){
     project.projectStatus = "In-Progress"
     project.isComplete = false
     // console.log(project.projectStatus)
-  }else if(counts.doneTask === counts.totalTask && counts.totalTask > 0){
+  } else if(counts.doneTask === counts.totalTask && counts.totalTask > 0){
     project.projectStatus = "Complete"
     project.isComplete = true
     const date = new Date()
@@ -397,13 +375,13 @@ function projectStatus(project){
 
 
 
-  } else if (counts.totalTask > 0 && counts.onHoldTask === counts.totalTask){
+  } 
+  
+  else if (counts.totalTask > 0 && counts.onHoldTask === counts.totalTask){
     project.projectStatus = "On-Hold"
     project.isComplete = false
 
-  }
-  
-  else if ( completeCount === counts.totalTask  && counts.totalTask > 0){
+  } else if ( completeCount === counts.totalTask  && counts.totalTask > 0){
     if(!project.isComplete){
     let confirmCompletion = confirm("Would you like to complete this project with Task on hold?")
     if(confirmCompletion){
@@ -414,15 +392,17 @@ function projectStatus(project){
       const formatDate= date.toLocaleString('en-UK', options).replace(',', '/');
       project.completeDate = formatDate
       console.log(project.projectStatus)
-    } else{
-      project.projectStatus = "in-progress"
-      console.log(project.projectStatus)
-    }
-    }
+    // } else{
+    //   project.projectStatus = "in-progress"
+    //   console.log(project.projectStatus)
+    // }
+    // }
 
-  } else if(counts.totalTask === counts.toDoTask){
+  } } }
+  
+  else if(counts.totalTask === counts.toDoTask){
     
-    project.projectStatus = ""
+    project.projectStatus = " "
 
 
   } else {
@@ -505,22 +485,33 @@ function displayDetails(event){
                 }
     
     
-                allTaskDisplay.addEventListener('dragstart', () => {
-                    allTaskDisplay.classList.add("dragging");
+                allTaskDisplay.addEventListener('dragstart', (e) => {
+                  
+                   e.target.classList.add("dragging");
                 
                   });
         
-                allTaskDisplay.addEventListener("dragend", ()=>{
-                    allTaskDisplay.classList.remove("dragging");
+                allTaskDisplay.addEventListener("dragend", (e)=>{
+              
+                 e.target.classList.remove("dragging");
           
                   });
              
     
                   taskDelete.addEventListener("click", projectTaskDelete)
                   taskDelete.setAttribute('data-task-identifier', task.id);
-                })
 
-                 dragAndDropTask(project)  
+                
+               
+                 
+             
+
+                })
+               
+                
+               if(projectId){
+                dragAndDropTask(project)
+               }
  
           }
        
@@ -551,33 +542,42 @@ function displayDetails(event){
               e.preventDefault();
               e.stopPropagation();
               const draggedItem = document.querySelector(".dragging");
-              const taskId = draggedItem.getAttribute('data-task-id');
-              const currentProjectId = project.id;
-              const status = column.getAttribute('id').split('-')[0];
-              const currentTask = project.tasks.findIndex((task)=> task.id === taskId);
-              project.tasks[currentTask].status = status;
-              const displayProjectId = displayProject.getAttribute('data-project-identifier')
-              console.log(currentProjectId)
-              console.log(displayProjectId)
-              if(currentProjectId ===  displayProjectId){
-              column.appendChild(draggedItem)
-              projectStatus(project)
-              localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
-              console.log(project.isComplete)
-              console.log(project.tasks)
+              console.log(draggedItem)
+              if(draggedItem){
+                const taskId = draggedItem.getAttribute('data-task-id');
+                console.log(taskId)
+                const currentProjectId = project.id;
+                const status = column.getAttribute('id').split('-')[0];
+                const currentTask = project.tasks.findIndex((task)=> task.id === taskId);
+                project.tasks[currentTask].status = status;
+                const displayProjectId = displayProject.getAttribute('data-project-identifier')
+                console.log(currentProjectId)
+                console.log(displayProjectId)
+                if(currentProjectId ===  displayProjectId){
+                projectStatus(project)
+                displayDetails({currentTarget: {getAttribute: ()=>currentProjectId }})
+                localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects))
+                console.log(project.isComplete)
+                console.log(project.tasks)
+               
+            
+                } 
+  
+             
+            
+              }
+       
           
-          
-              } 
-
-           
             });
-          
-         
+             
+
+
+             
 
           
+   
         });
 
-        
 
      }
 
@@ -620,6 +620,7 @@ function changeMode(){
   }
 
 }
+
 
  darkModeBtn.addEventListener('click', changeMode)
  document.addEventListener("DOMContentLoaded", isdarkMode)
