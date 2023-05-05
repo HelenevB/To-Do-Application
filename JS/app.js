@@ -74,6 +74,11 @@ function projectDisplay() {
   projects.forEach((project) => {
     const projectElement = createProjectDisplay(project);
     const projectDelete = createDeleteButton(project);
+    if(project.isComplete){
+      const reOpenBtn = createReOpenButton(project)
+      projectElement.appendChild(reOpenBtn)
+      reOpenBtn.addEventListener("click", activateOpenButton);
+    }
     projectElement.appendChild(projectDelete);
     addProjectEventListeners(projectElement);
     projectDelete.addEventListener("click", deleteProject);
@@ -88,6 +93,7 @@ function projectDisplay() {
 //   funtion built to create the project section
 function createProjectDisplay(project) {
   const projectElement = document.createElement("div");
+  const taskSummary = document.createElement('div')
   const projectHeading = document.createElement("h2");
   const projectCreated = document.createElement("p");
 
@@ -96,13 +102,14 @@ function createProjectDisplay(project) {
   });
 
   projectCreated.setAttribute("id", "project-created");
+  taskSummary.classList.add("task-summary")
 
   projectHeading.innerText = project.name;
   projectCreated.innerText = ` Created: ${project.createdDate}`;
 
   projectElement.appendChild(projectHeading);
   projectElement.appendChild(projectCreated);
-
+  projectElement.appendChild(taskSummary)
   projectElement.classList.add("project-element");
   if (project.isComplete) {
     projectElement.classList.add("completed");
@@ -112,7 +119,7 @@ function createProjectDisplay(project) {
     projectElement.style.backgroundColor = project.backgroundColor;
   }
 
-  taskSummaryDisplay(project, projectElement);
+  taskSummaryDisplay(project, taskSummary);
   displayStatus(project, projectElement);
 
   return projectElement;
@@ -206,6 +213,32 @@ function createProject(name, color) {
   };
 }
 
+
+function createReOpenButton (project){
+  const reOpen = document.createElement("button");
+  reOpen.setAttribute("id", project.id);
+ reOpen.classList.add("reopen-button");
+  reOpen.innerText = "Re-Activate Project";
+
+  return reOpen;
+
+}
+
+function activateOpenButton(e){
+  e.stopPropagation();
+ const currentProjectId =  e.target.getAttribute("id")
+ console.log(currentProjectId)
+ const currentProject = projects.find(
+  (project) => project.id === currentProjectId
+);
+ if(!currentProject) return
+  currentProject.isComplete = ""
+  currentProject.projectStatus = ""
+  localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
+  projectDisplay()
+
+}
+
 function submitTask(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -271,9 +304,8 @@ function projectTaskDelete(e) {
   console.log(currentProject.tasks);
 }
 
-function taskSummaryDisplay(project, projectElement) {
+function taskSummaryDisplay(project, taskSummary) {
   const counts = taskCounts(project);
-  const taskSummary = document.createElement("div");
   const taskTotal = document.createElement("p");
   const toDo = document.createElement("p");
   const doing = document.createElement("p");
@@ -287,13 +319,11 @@ function taskSummaryDisplay(project, projectElement) {
 
   taskTotal.setAttribute("id", "task-total");
 
-  projectElement.appendChild(taskSummary);
-
-  taskSummary.appendChild(taskTotal);
-  taskSummary.appendChild(toDo);
-  taskSummary.appendChild(doing);
-  taskSummary.appendChild(done);
-  taskSummary.appendChild(onHold);
+  taskSummary.insertBefore(taskTotal, taskSummary.children[0]);
+  taskSummary.insertBefore(toDo, taskSummary.children[1]);
+  taskSummary.insertBefore(doing, taskSummary.children[2]);
+  taskSummary.insertBefore(done, taskSummary.children[3]);
+  taskSummary.insertBefore(onHold, taskSummary.children[4]);
 
   taskTotal.innerText = ` Total Tasks: ${counts.totalTask}`;
   toDo.innerText = `To-do : ${counts.toDoTask}`;
@@ -340,17 +370,25 @@ function projectStatus(project) {
     project.isComplete = false;
     // console.log(project.projectStatus)
   } else if (counts.doneTask === counts.totalTask && counts.totalTask > 0) {
-    project.projectStatus = "Complete";
-    project.isComplete = true;
-    const date = new Date();
-    const options = {
-      timeZone: "UTC",
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    };
-    const formatDate = date.toLocaleString("en-UK", options).replace(",", "/");
-    project.completeDate = formatDate;
+    if(!project.isComplete){
+      let confirmCompletion = confirm(
+        "All tasks logged are marked as complete would you like to finalize this project?"
+      );
+      if(confirmCompletion){
+        project.projectStatus = "Complete";
+        project.isComplete = true;
+        const date = new Date();
+        const options = {
+          timeZone: "UTC",
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        };
+        const formatDate = date.toLocaleString("en-UK", options).replace(",", "/");
+        project.completeDate = formatDate;
+      }
+    }
+
     // console.log(project.projectStatus)
   } else if (counts.totalTask > 0 && counts.onHoldTask === counts.totalTask) {
     project.projectStatus = "On-Hold";
@@ -375,11 +413,6 @@ function projectStatus(project) {
           .replace(",", "/");
         project.completeDate = formatDate;
         console.log(project.projectStatus);
-        // } else{
-        //   project.projectStatus = "in-progress"
-        //   console.log(project.projectStatus)
-        // }
-        // }
       }
     }
   } else if (counts.totalTask === counts.toDoTask) {
@@ -461,9 +494,6 @@ function displayDetails(event) {
     taskDelete.setAttribute("data-task-identifier", task.id);
   });
 
-  //  if(projectId){
-  //   dragAndDropTask(project)
-  //  }
 }
 
 function dragAndDropTask(event) {
