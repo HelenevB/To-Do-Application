@@ -611,25 +611,46 @@ function sortProjects (projects, sortOptionSelected){
   }
 }
 
+function filterProjects(projects, filterOption){
+ if(filterOption === 'isCompletedFalse'){
+
+    return projects.filter(project => project.isComplete === false)
+
+  } else if(filterOption === 'isCompletedTrue'){
+
+    return projects.filter(project => project.isComplete === true)
+
+  }
+  else {
+     return projects
+  }
+}
+
 
 
 
 function handleOptionsChange(){
   const sortOptionSelected = sortOptions.value
+  const filterOptionsSelected = filterOptions.value
+  console.log(filterOptionsSelected)
   console.log(sortOptionSelected)
 
-  const sortedPorjects = sortProjects(projects, sortOptionSelected)
+  const sortedProjects = sortProjects(projects, sortOptionSelected)
+  const filteredProjects =filterProjects(sortedProjects, filterOptionsSelected)
 
-   projectDisplay(sortedPorjects)
+
+   projectDisplay(filteredProjects)
 
 }
+
 
 darkModeBtn.addEventListener("click", changeMode);
 document.addEventListener("DOMContentLoaded", isdarkMode);
 document.addEventListener("DOMContentLoaded", handleOptionsChange)
 sortOptions.addEventListener("change", handleOptionsChange)
-formClose.addEventListener("click", projectDisplay(projects));
-closeDisplay.addEventListener("click", closeProject);
+filterOptions.addEventListener('change', handleOptionsChange)
+formClose.addEventListener('click', handleOptionsChange)
+closeDisplay.addEventListener("click",closeProject);
 addTaskForm.addEventListener("submit", submitTask);
 projectForm.addEventListener("submit", addProject);
 appTitle.addEventListener("click", closeProject);
