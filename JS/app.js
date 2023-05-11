@@ -22,6 +22,8 @@ const projectFormSubmit = document.getElementById("projectformsubmit");
 const formClose = document.getElementById("form-close");
 const darkModeBtn = document.getElementById("dark-mode");
 const body = document.querySelector("body");
+const sortOptions = document.getElementById('sort-options')
+const filterOptions = document.getElementById('filter-options')
 
 const LOCAL_STORAGE_PROJECT_LIST = "projects.list";
 
@@ -63,7 +65,7 @@ function createAddProject() {
 }
 // function to display all the projects
 
-function projectDisplay() {
+function projectDisplay(projects) {
   clearProject(projectsContainer);
   newProjectFormSection.style.display = "none";
   myProjectsGrid.classList.remove("blurgrid");
@@ -87,7 +89,6 @@ function projectDisplay() {
 
   });
 
-  isdarkMode();
 }
 
 //   funtion built to create the project section
@@ -159,7 +160,7 @@ function deleteProject(event) {
   projects.splice(id, 1);
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
   console.log(projects);
-  projectDisplay();
+  projectDisplay(projects);
 }
 
 function closeProject() {
@@ -189,7 +190,7 @@ function addProject(event) {
   projectColor.value = "#CC5500";
   projects.push(projectList);
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
-  projectDisplay();
+  handleOptionsChange()
 }
 
 function createProject(name, color) {
@@ -235,7 +236,7 @@ function activateOpenButton(e){
   currentProject.isComplete = ""
   currentProject.projectStatus = ""
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
-  projectDisplay()
+ handleOptionsChange()
 
 }
 
@@ -572,12 +573,65 @@ function changeMode() {
   }
 }
 
+// sort and filtering 
+
+function sortProjects (projects, sortOptionSelected){
+  if(sortOptionSelected ==='createDateOldest'){
+  return projects.sort((a,b) => 
+    { 
+      if (a.createdDate === b.createdDate) {
+        const aId = parseInt(a.id);
+        console.log(aId)
+        const bId = parseInt(b.id);
+        return bId - aId;
+      } else {
+        const aDate = new Date(a.createdDate);
+        const bDate = new Date(b.createdDate);
+        return bDate - aDate;
+      }
+  
+ })
+  }
+  else if(sortOptionSelected ==='createDateNewest'){
+    return projects.sort((a,b) => {
+      if (a.createdDate === b.createdDate) {
+        const aId = parseInt(a.id);
+        console.log(aId)
+        const bId = parseInt(b.id);
+        return aId - bId;
+      } else {
+        const aDate = new Date(a.createdDate);
+        const bDate = new Date(b.createdDate);
+        return aDate -bDate;
+      }
+    })
+  }
+  else {
+    return projects
+  }
+}
+
+
+
+
+function handleOptionsChange(){
+  const sortOptionSelected = sortOptions.value
+  console.log(sortOptionSelected)
+
+  const sortedPorjects = sortProjects(projects, sortOptionSelected)
+
+   projectDisplay(sortedPorjects)
+
+}
+
 darkModeBtn.addEventListener("click", changeMode);
 document.addEventListener("DOMContentLoaded", isdarkMode);
-formClose.addEventListener("click", projectDisplay);
+document.addEventListener("DOMContentLoaded", handleOptionsChange)
+sortOptions.addEventListener("change", handleOptionsChange)
+formClose.addEventListener("click", projectDisplay(projects));
 closeDisplay.addEventListener("click", closeProject);
 addTaskForm.addEventListener("submit", submitTask);
 projectForm.addEventListener("submit", addProject);
 appTitle.addEventListener("click", closeProject);
 
-projectDisplay();
+
