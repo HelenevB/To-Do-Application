@@ -25,6 +25,7 @@ const body = document.querySelector("body");
 const sortOptions = document.getElementById('sort-options')
 const filterOptions = document.getElementById('filter-options')
 
+
 const LOCAL_STORAGE_PROJECT_LIST = "projects.list";
 
 let projects =
@@ -72,6 +73,18 @@ function projectDisplay(projects) {
 
   const addProjectContainer = createAddProject();
   projectsContainer.appendChild(addProjectContainer);
+ 
+  if(filterOptions.value !== 'isCompletedTrue'){
+    addProjectContainer.style.display = 'block'
+
+  } else {
+    addProjectContainer.style.display = 'none'
+  }
+
+
+  
+
+  
 
   projects.forEach((project) => {
     const projectElement = createProjectDisplay(project);
@@ -164,7 +177,7 @@ function deleteProject(event) {
 }
 
 function closeProject() {
-  location.reload();
+location.reload()
 }
 
 function displayCreateProject() {
