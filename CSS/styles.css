@@ -1,5 +1,8 @@
-body{
-    font-family: 'Gloria Hallelujah', cursive;
+* {
+  font-family: 'Gloria Hallelujah', cursive;
+}
+
+body {
     overflow-x: hidden;
     box-sizing: border-box;
     margin: 0;
@@ -7,14 +10,6 @@ body{
  
 }
 
-
-
-#header , #app-name , #addNewProject{
-    margin: 0;  
-    padding: 0;
-
-  
-}
 
 #header{
 
@@ -24,8 +19,18 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
- 
+    margin: 0;  
+    padding: 0;
 }
+
+#app-name  {
+    margin-left: 25px;
+}
+
+#dark-mode{
+    margin-right: 25px;
+}
+
 
 .blurgrid {
     filter: blur(5px);
@@ -60,6 +65,7 @@ body{
     text-align: center;
     margin-top: 10px;
     margin-right: 10px;
+    min-height: 31vh;
 }
 
 #project-created {
@@ -74,7 +80,7 @@ body{
     border: none;
     border-radius: 30%;
     color: white;
-    font-family: 'Gloria Hallelujah', cursive;
+    /* font-family: 'Gloria Hallelujah', cursive; */
 
 }
 
@@ -100,7 +106,6 @@ body{
     border-radius: 5px;
     outline: none;
     box-shadow: 0 2px 2px #36454F;
-    font-family: 'Gloria Hallelujah', cursive;
     font-size: 10px;
     margin-bottom: 10px;
 }
@@ -113,7 +118,7 @@ body{
 }
 
 .reopen-button:active{
-       background-color: whitesmoke;
+    background-color: whitesmoke;
     opacity: 0.5;
     box-shadow: 0px 1px 0px #313335;
     transform: translateY(4px);
@@ -160,20 +165,42 @@ body{
 #form-close{
     display: block;
     top:-25%;
-    right: 2%
+    right: 2%;
+    color: black;
 
 }
 
 .form-sections{
     padding: 10px 0;
 }
+
+
 .form-input{
-    font-family:'Gloria Hallelujah', cursive ;
     width: 100%;
     border-radius: 10px;
     border: solid 1px rgb(169, 157, 157); 
 
 }
+
+
+
+
+#filter-form {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    width:25vw;
+    margin-bottom: 10px;
+   
+    
+}
+
+
+ #sort-options,  #filter-options{
+  margin-right: 10px;
+  border-radius: 25px;
+}
+
 
 #addNewProject{
     width: 25vw;
@@ -187,28 +214,26 @@ body{
     background-color: rgb(239, 234, 234);
     border: dotted 2px black;
     border-radius: 25px;
-    width: 25vw;
+    width: 15vw;
+    height: 30vh;
     position:absolute;
     z-index: 1;
     top: 45vh;
-    left: 35vw;
-
-   
-    
+    left: 35vw; 
 }
 
 
 #color-selector{
-    width: 50px;
+    width: 65px;
     height: 30px;
     border: none; 
     padding-left: 10px;
     background: none;
+   
 }
 
 #colorsform{
     display: flex;
-    /* justify-content: space-between; */
    align-items: center;
 }
 
@@ -234,7 +259,6 @@ body{
 #task-total{
     text-align: center;
     margin-top: 0px;
-    /* border-bottom: #FFFFFF dotted 1px; */
     font-size: medium;
 }
 /* project detail displays */
@@ -245,7 +269,6 @@ body{
     width: 98vw;
     margin: 10px auto;
     align-items: center;
-    
     height: 100vh;
 }
 
@@ -253,7 +276,10 @@ body{
     display: flex;
     justify-content: space-between;
     margin-right: 10px
+    
 }
+
+
 
 
 .status-columns-wrapper{
@@ -378,7 +404,7 @@ body{
     background-color:#36454F; 
 }
 
-.dark-theme .reopen-button{
+.dark-theme .reopen-button , .dark-theme #form-close{
 color: #FFFFFF;
 }
 

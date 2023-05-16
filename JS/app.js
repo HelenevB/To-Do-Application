@@ -22,6 +22,7 @@ const projectFormSubmit = document.getElementById("projectformsubmit");
 const formClose = document.getElementById("form-close");
 const darkModeBtn = document.getElementById("dark-mode");
 const body = document.querySelector("body");
+const filterForm = document.getElementById('filter-form')
 const sortOptions = document.getElementById('sort-options')
 const filterOptions = document.getElementById('filter-options')
 
@@ -45,6 +46,8 @@ function isdarkMode() {
   }
 }
 
+// Creating the Element that displays the project form when clicked
+
 function createAddProject() {
   const projectElement = document.createElement("div");
   const projectHeading = document.createElement("h2");
@@ -67,6 +70,10 @@ function createAddProject() {
 // function to display all the projects
 
 function projectDisplay(projects) {
+
+  if(projects.length === 0 ){
+    filterForm.style.display ='none'
+  }
   clearProject(projectsContainer);
   newProjectFormSection.style.display = "none";
   myProjectsGrid.classList.remove("blurgrid");
@@ -157,6 +164,7 @@ function addProjectEventListeners(projectElement) {
   projectElement.addEventListener("click", dragAndDropTask);
 }
 
+// remove event listeners from each project when element click 
 function removeProjectEventListeners(projectElement) {
   projectElement.removeEventListener("click", displayDetails);
   projectElement.querySelector("h2").removeEventListener("click", displayDetails);
@@ -180,6 +188,8 @@ function closeProject() {
 location.reload()
 }
 
+// changing the display when project form showing
+
 function displayCreateProject() {
   const projectElements = document.querySelectorAll(".project-element");
   projectElements.forEach((projectElement) => {
@@ -189,6 +199,8 @@ function displayCreateProject() {
   newProjectFormSection.style.display = "block";
   myProjectsGrid.classList.add("blurgrid");
 }
+
+// obtaining details from new project form 
 
 function addProject(event) {
   event.preventDefault();
@@ -205,6 +217,8 @@ function addProject(event) {
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
   handleOptionsChange()
 }
+
+// taking the details and creating project object
 
 function createProject(name, color) {
   const date = new Date();
@@ -228,6 +242,7 @@ function createProject(name, color) {
 }
 
 
+// creating display for reOpen button 
 function createReOpenButton (project){
   const reOpen = document.createElement("button");
   reOpen.setAttribute("id", project.id);
@@ -238,6 +253,8 @@ function createReOpenButton (project){
 
 }
 
+// activating the clicked project 
+
 function activateOpenButton(e){
   e.stopPropagation();
  const currentProjectId =  e.target.getAttribute("id")
@@ -246,13 +263,14 @@ function activateOpenButton(e){
   (project) => project.id === currentProjectId
 );
  if(!currentProject) return
-  currentProject.isComplete = ""
+  currentProject.isComplete = false
   currentProject.projectStatus = ""
   localStorage.setItem(LOCAL_STORAGE_PROJECT_LIST, JSON.stringify(projects));
  handleOptionsChange()
 
 }
 
+// saving new task submitted 
 function submitTask(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -286,6 +304,7 @@ function submitTask(event) {
   displayDetails({ currentTarget: { getAttribute: () => currentProjectId } });
 }
 
+// creating task delete button for each task 
 function createTaskDeleteButton(task) {
   const taskDelete = document.createElement("button");
 
@@ -295,6 +314,8 @@ function createTaskDeleteButton(task) {
 
   return taskDelete;
 }
+
+// removing the task from the projects.tasks array 
 
 function projectTaskDelete(e) {
   const currentTaskElement = e.target.closest(".task");
@@ -318,6 +339,8 @@ function projectTaskDelete(e) {
   console.log(currentProject.tasks);
 }
 
+
+// displaying the task counts for each project
 function taskSummaryDisplay(project, taskSummary) {
   const counts = taskCounts(project);
   const taskTotal = document.createElement("p");
@@ -346,6 +369,8 @@ function taskSummaryDisplay(project, taskSummary) {
   onHold.innerText = `On-Hold ${counts.onHoldTask}`;
 }
 
+// obtaining the task counts for each project 
+
 function taskCounts(project) {
   const projectTask = project.tasks;
   let totalTask = 0;
@@ -370,6 +395,8 @@ function taskCounts(project) {
 
   return { totalTask, toDoTask, doingTask, doneTask, onHoldTask };
 }
+
+// updating the status of each project based on taskCounts
 
 function projectStatus(project) {
   const counts = taskCounts(project);
@@ -437,6 +464,8 @@ function projectStatus(project) {
   console.log(projects);
 }
 
+// showing the status in the project element 
+
 function displayStatus(project, projectElement) {
   const projectStatus = document.createElement("p");
   projectElement.insertBefore(projectStatus, projectElement.children[2]);
@@ -451,6 +480,8 @@ function displayStatus(project, projectElement) {
 function clearProject(element) {
   while (element.firstChild) element.removeChild(element.firstChild);
 }
+
+// displaying the list of task for each project 
 
 function displayDetails(event) {
   projectSection.style.display = "none";
@@ -509,6 +540,8 @@ function displayDetails(event) {
   });
 
 }
+
+// drag and dropping tasks between columns
 
 function dragAndDropTask(event) {
   const currentProjectId = event.currentTarget.getAttribute(
@@ -586,7 +619,7 @@ function changeMode() {
   }
 }
 
-// sort and filtering 
+// sorting projercts by datae
 
 function sortProjects (projects, sortOptionSelected){
   if(sortOptionSelected ==='createDateOldest'){
@@ -624,6 +657,8 @@ function sortProjects (projects, sortOptionSelected){
   }
 }
 
+// filtering projects by completion
+
 function filterProjects(projects, filterOption){
  if(filterOption === 'isCompletedFalse'){
 
@@ -641,6 +676,7 @@ function filterProjects(projects, filterOption){
 
 
 
+// handling the project display based on sort/filter values are selects
 
 function handleOptionsChange(){
   const sortOptionSelected = sortOptions.value
