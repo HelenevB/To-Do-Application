@@ -199,6 +199,7 @@ body {
  #sort-options,  #filter-options{
   margin-right: 10px;
   border-radius: 25px;
+  text-align: center;
 }
 
 
