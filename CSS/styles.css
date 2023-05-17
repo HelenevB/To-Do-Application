@@ -215,8 +215,8 @@ body {
     background-color: rgb(239, 234, 234);
     border: dotted 2px black;
     border-radius: 25px;
-    width: 15vw;
-    height: 30vh;
+    width: max-content;
+    height: max-content;
     position:absolute;
     z-index: 1;
     top: 45vh;
